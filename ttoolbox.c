@@ -109,7 +109,7 @@ void raid_calculator()
     gwidget.raid_entry_grid = create_entries(raid.entry_len-1, gwidget.raid_entries);
     packboxes(3);
 }
-s
+
 void calc_raid()
 {
     const gchar *ascii_entries[raid.entry_len];

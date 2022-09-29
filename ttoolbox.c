@@ -109,18 +109,17 @@ void raid_calculator()
     gwidget.raid_entry_grid = create_entries(raid.entry_len-1, gwidget.raid_entries);
     packboxes(3);
 }
-
+s
 void calc_raid()
 {
     const gchar *ascii_entries[raid.entry_len];
     int int_entries[raid.entry_len];
     get_entry_text(gwidget.raid_entries, ascii_entries, raid.entry_len);
-    for(int i = 0; i < raid.entry_len-1; i++)
+
+    for(int i = 0; i < raid.entry_len-1; i++) // segfaults without this....wtf why?!?!
     {
         int_entries[i] = atoi(ascii_entries[i]);
-        printf("%d\n", int_entries[i]);
     }
-
 }
 
 void packboxes(int i)

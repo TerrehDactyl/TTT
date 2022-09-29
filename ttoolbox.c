@@ -20,11 +20,12 @@ modules to integrate
 -pwcracking 
 -traceroute
 */
+void network_scanning(gchar *buttonlabels[], void *buttoncallbacks[], gchar *labeltext[]);
+void website_scanning();
+void passwd_cracking();
+void raid_calculator();
 void packboxes(int i);
-//void createnotebookpage(int i, gchar *buttonlabels[], void *buttoncallbacks[], 
-//                        size_t butt_size, gchar *chooserlabels[], void *choosercallbacks, 
-//                        location *data, size_t chooserarr_size, gchar *labeltext[]);
-void create_root_notebook_pages(GtkWidget *notebook, gchar *pageheads[]);
+void calc_raid();
 struct widgets
 {
     GtkWidget *window;
@@ -41,94 +42,85 @@ struct widgets
     GtkWidget *child;
     GtkComboBox *raid_type_combo;
     GtkWidget *raid_entry_grid;
-    GtkWidget *raid_entries[3];
+    GtkWidget *raid_entries[2];
     GtkComboBox *dns_combo;
 }gwidget;
 
-gchar *pageheads[] = {"Network Scanning", "Website Scanning", "Password Cracking", "Raid Calculator"};
-gchar *nested_pageheads[] = {"Port Scan", "Protocol Analyzer", "Network Enumeration/Fingerprinting", "Raid Calculator"};
-size_t nested_len = arraysize(nested_pageheads);
-size_t pagehead_len = arraysize(pageheads);
 int main( int argc, char *argv[] )
 {
     gtk_init (&argc, &argv);
     
     gwidget.window = createwindow("TTOOLBOX", GTK_WIN_POS_CENTER, "test.png");
     gwidget.notebook = createnotebook(gwidget.window);
-    pscan.label_len = arraysize(pscan_labels);
-    pscan.btn_len = arraysize(pscan_btn_labels);
-    pwcrack.combo_label_len = arraysize(pwcrack_combo_labels);
-    raid.type_label_len = arraysize(raid_type_labels);
-    raid.entry_len = arraysize(raid_entries);
-    dns.scan_type_len = arraysize(dns_scan_type);
 
-  //  for(int i = 0; i < pagehead_len; i++)
-   //     create_frame_with_pagehead(notebook, pageheads[i]); 
-    //create_root_notebook_pages(gwidget.notebook, pageheads);
-    createnotebookpage(0, pscan_btn_labels, pscan_btn_cbks, pscan.btn_len, NULL, NULL, NULL, pscan.label_len, pscan_labels);
-    createnotebookpage(1, NULL, NULL, 0, NULL, NULL, NULL, 0, NULL);
-    createnotebookpage(2, NULL, NULL, 0, NULL, NULL, NULL, 0, NULL);
-    createnotebookpage(3, NULL, NULL, 0, NULL, NULL, NULL, raid.entry_len, raid_entries);
-    createnotebookpage(4, NULL, NULL, 0, NULL, NULL, NULL, 0, NULL);
+    network_scanning(pscan_btn_labels,pscan_btn_cbks, pscan_labels);
+    website_scanning();
+    passwd_cracking();
+    raid_calculator();
 
     show_and_destroy(gwidget.window);
 }
-/*
-void create_root_notebook_pages(GtkWidget *notebook, gchar *pageheads[])
+
+void network_scanning(gchar *buttonlabels[], void *buttoncallbacks[], gchar *labeltext[])
 {
-    GtkWidget *frame;
-    for(int i = 0; i < pagehead_len; i++)
-    {
-        frame = create_frame_with_pagehead(notebook, pageheads[i]);
-        populate_notebook_pages(frame, pageheads[i]);
-    }
+    pscan.label_len = arraysize(pscan_labels);
+    pscan.btn_len = arraysize(pscan_btn_labels);
+    gwidget.labelgrid = createlabels(labeltext, pscan.label_len);
+    gwidget.buttonbox = createsinglesizegrid(buttonlabels, buttoncallbacks, NULL,1, pscan.btn_len);
+    gwidget.pscan_entry_grid = create_entries(pscan.label_len, gwidget.pscan_entries);
+    gwidget.nested_notebook = createnotebook(gwidget.notebook);
+    gwidget.nested_frame = create_frame_with_pagehead(gwidget.nested_notebook, "Network Scanning");
+    gwidget.child = gtk_notebook_get_nth_page (GTK_NOTEBOOK(gwidget.notebook), 0);
+    gwidget.page_label = gtk_label_new("Network Scanning");                         
+    gtk_notebook_set_tab_label(GTK_NOTEBOOK(gwidget.notebook), gwidget.child, gwidget.page_label);
+    packboxes(0);
 }
-void populate_notebook_pages(GtkWidget *frame, gchar *pagehead)
+
+void website_scanning()
 {
-    
+    dns.scan_type_len = arraysize(dns_scan_type);
+    gwidget.nested_notebook = createnotebook(gwidget.notebook);
+    gwidget.child = gtk_notebook_get_nth_page (GTK_NOTEBOOK(gwidget.notebook), 1);
+    gwidget.page_label = gtk_label_new("Website Scanning");                       
+    gtk_notebook_set_tab_label(GTK_NOTEBOOK(gwidget.notebook), gwidget.child, gwidget.page_label);
+    gwidget.nested_frame = create_frame_with_pagehead(gwidget.nested_notebook, "Website Scanning");
+    gwidget.dns_combo = create_combobox(dns_scan_type,  dns.scan_type_len, dns_combo_cbk);
+    packboxes(1);
 }
 
-*/
-void createnotebookpage(int i, gchar *buttonlabels[], void *buttoncallbacks[], 
-                        size_t butt_size, gchar *chooserlabels[], void *choosercallbacks, 
-                        location *data, size_t chooserarr_size, gchar *labeltext[])
+void passwd_cracking()
 {
-    gwidget.labelgrid = createlabels(labeltext, chooserarr_size);
-    gwidget.buttonbox = createsinglesizegrid(buttonlabels, buttoncallbacks, data,1, butt_size);
-    switch(i)
+    pwcrack.combo_label_len = arraysize(pwcrack_combo_labels);
+    gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Password Cracking");
+    gwidget.pwcrack_combo = create_combobox(pwcrack_combo_labels,  pwcrack.combo_label_len, pwcrack_combo_cbk);
+    packboxes(2);
+}
+
+void raid_calculator()
+{
+    gchar *buttonlabels[] = {"Calculate"};
+    raid.btn_len = arraysize(buttonlabels); 
+    raid.type_label_len = arraysize(raid_type_labels);
+    raid.entry_len = arraysize(raid_entries);
+    void *raid_calc_cbk[] = {calc_raid};
+    gwidget.buttonbox = createsinglesizegrid(buttonlabels, raid_calc_cbk, NULL,1, raid.btn_len);
+    gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Raid Calculator");
+    gwidget.raid_type_combo = create_combobox(raid_type_labels,  raid.type_label_len, raid_type_cbk);
+    gwidget.raid_entry_grid = create_entries(raid.entry_len-1, gwidget.raid_entries);
+    packboxes(3);
+}
+
+void calc_raid()
+{
+    const gchar *ascii_entries[raid.entry_len];
+    int int_entries[raid.entry_len];
+    get_entry_text(gwidget.raid_entries, ascii_entries, raid.entry_len);
+    for(int i = 0; i < raid.entry_len-1; i++)
     {
-        case 0:
-        gwidget.pscan_entry_grid = create_entries(pscan.label_len, gwidget.pscan_entries);
-        gwidget.nested_notebook = createnotebook(gwidget.notebook);
-        gwidget.nested_frame = create_frame_with_pagehead(gwidget.nested_notebook, pageheads[i]);
-        gwidget.child = gtk_notebook_get_nth_page (GTK_NOTEBOOK(gwidget.notebook), 0);
-        gwidget.page_label = gtk_label_new("Network Scanning");                         
-        gtk_notebook_set_tab_label(GTK_NOTEBOOK(gwidget.notebook), gwidget.child, gwidget.page_label);
-        packboxes(i);
-        break;
-
-        case 1: 
-        gwidget.nested_notebook = createnotebook(gwidget.notebook);
-        gwidget.child = gtk_notebook_get_nth_page (GTK_NOTEBOOK(gwidget.notebook), 1);
-        gwidget.page_label = gtk_label_new("Website Scanning");                       
-        gtk_notebook_set_tab_label(GTK_NOTEBOOK(gwidget.notebook), gwidget.child, gwidget.page_label);
-        gwidget.nested_frame = create_frame_with_pagehead(gwidget.nested_notebook, pageheads[i]);
-        gwidget.dns_combo = create_combobox(dns_scan_type,  dns.scan_type_len, dns_combo_cbk);
-        packboxes(i);
-        break;
-
-        case 2:
-        gwidget.frame = create_frame_with_pagehead(gwidget.notebook, pageheads[i]);
-        gwidget.pwcrack_combo = create_combobox(pwcrack_combo_labels,  pwcrack.combo_label_len, pwcrack_combo_cbk);
-        packboxes(i);
-        break;
-
-        case 3:
-        gwidget.frame = create_frame_with_pagehead(gwidget.notebook, pageheads[i]);
-        gwidget.raid_type_combo = create_combobox(raid_type_labels,  raid.type_label_len, raid_type_cbk);
-        gwidget.raid_entry_grid = create_entries(raid.entry_len-1, gwidget.raid_entries);
-        packboxes(i);
+        int_entries[i] = atoi(ascii_entries[i]);
+        printf("%d\n", int_entries[i]);
     }
+
 }
 
 void packboxes(int i)
@@ -164,6 +156,7 @@ void packboxes(int i)
         gtk_box_pack_start(GTK_BOX(hbox),  gwidget.labelgrid, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(hbox),  gwidget.raid_entry_grid, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(vbox),  GTK_WIDGET(gwidget.raid_type_combo), FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(vbox),  GTK_WIDGET(gwidget.buttonbox), FALSE, FALSE, 0); 
         break;
     }
 }

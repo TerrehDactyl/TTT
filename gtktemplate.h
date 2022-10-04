@@ -42,7 +42,7 @@ GtkWidget *create_frame_with_pagehead(GtkWidget *notebook, gchar *pagehead)
 	GtkWidget *frame = gtk_frame_new (pagehead);                                       
 	GtkWidget *pagelabel = gtk_label_new(pagehead);							
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 10);                  
-	gtk_widget_set_size_request (frame, 100, 75);                                
+	gtk_widget_set_size_request (frame, 500, 75);                                
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), frame, pagelabel); 
 	return frame;
 }
@@ -296,4 +296,14 @@ void draw_image(GtkWidget *widget, cairo_t *cr, gpointer user_data)
 	GdkPixbuf *pixbuf = createpixbuf(data); 
 	gdk_cairo_set_source_pixbuf(cr, pixbuf, 0, 0);
 	cairo_paint (cr);
+}
+
+const unsigned long hash(const char *str) 
+{
+    unsigned long hash = 25;  
+    int c;
+
+    while ((c = *str++))
+        hash = ((hash << 2) + hash) + c;
+    return hash;
 }

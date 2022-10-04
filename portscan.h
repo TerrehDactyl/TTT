@@ -20,6 +20,8 @@ struct input_variables
 	int startip[4];
 	int endip[4];
 	int range[4];
+	GtkWidget *entries[4];
+	size_t entry_len;
 }pscan;
 
 gchar *pscan_btn_labels[] ={"Start Scan", "Cancel Scan"};
@@ -29,7 +31,7 @@ void startscan()
 {
 	FILE *filepointer;
 	filepointer = fopen("Results.txt", "w");
-	//get_entry_text(gwidget.entries, pscan.entrytext, pscan.label_len);
+	get_entry_text(pscan.entries, pscan.entrytext, pscan.label_len);
 	int start = atoi(pscan.entrytext[0]);
 	int end = atoi(pscan.entrytext[1]);
 

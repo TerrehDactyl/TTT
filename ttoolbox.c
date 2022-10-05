@@ -81,14 +81,12 @@ void network_scanning(gchar *buttonlabels[], void *buttoncallbacks[], gchar *lab
     gwidget.child = gtk_notebook_get_nth_page (GTK_NOTEBOOK(gwidget.notebook), 0);
     gwidget.page_label = gtk_label_new("Network Scanning");                         
     gtk_notebook_set_tab_label(GTK_NOTEBOOK(gwidget.notebook), gwidget.child, gwidget.page_label);
-    GtkTextBuffer *buffer = gtk_text_buffer_new (NULL);
+    const gchar *text = {"This is a test to see how this window works\ndoes this autosize?\ndoes this scroll?\ndoes this look correct?\n\n\n\n\n\n\n\n\nhow about now?\n\n\n\n\n\n\nnow?"};
     gwidget.scrolledwindow = gtk_scrolled_window_new(NULL, NULL);
-    const gchar *text = {"Prefilteriem ltiple pictures Preprocess\n"};
-    gtk_text_buffer_set_text (buffer, text, -1);
-    gwidget.pscan_output = gtk_text_view_new_with_buffer (buffer);
-    gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (gwidget.pscan_output), GTK_WRAP_WORD); 
-    gtk_text_view_set_editable(GTK_TEXT_VIEW(gwidget.pscan_output), FALSE);
-  //gtk_widget_set_sensitive(GTK_WIDGET(gwidget.pscan_output),FALSE);
+    gtk_widget_set_size_request(gwidget.scrolledwindow, 200, 150); //sets the size of the display 
+    gwidget.pscan_output = create_text_display(FALSE, 200, 150);
+    gwidget.buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW ( gwidget.pscan_output));
+    gtk_text_buffer_set_text (gwidget.buffer, text, -1);
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (gwidget.scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC); 
     gtk_container_add (GTK_CONTAINER (gwidget.scrolledwindow), gwidget.pscan_output);
     packboxes(0);
@@ -108,14 +106,12 @@ void website_scanning()
     gtk_notebook_set_tab_label(GTK_NOTEBOOK(gwidget.notebook), gwidget.child, gwidget.page_label);
     gwidget.nested_frame = create_frame_with_pagehead(gwidget.nested_notebook, "Website Scanning");
     gwidget.dns_combo = create_combobox(dns_scan_type,  dns.scan_type_len, dns_combo_cbk);
-    GtkTextBuffer *buffer = gtk_text_buffer_new (NULL);//start of scrolled window function
     gwidget.scrolledwindow = gtk_scrolled_window_new(NULL, NULL);
     const gchar *text = {"Prefilteriem ltiple pictures Preprocess\n"};
-    gtk_text_buffer_set_text (buffer, text, -1);
-    gwidget.dns_output = gtk_text_view_new_with_buffer (buffer);
-    gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (gwidget.dns_output), GTK_WRAP_WORD); 
-    gtk_text_view_set_editable(GTK_TEXT_VIEW(gwidget.dns_output), FALSE);
-  //gtk_widget_set_sensitive(GTK_WIDGET(gwidget.pscan_output),FALSE);
+    gtk_widget_set_size_request(gwidget.scrolledwindow, 200, 150); //sets the size of the display 
+    gwidget.dns_output = create_text_display(FALSE, 200, 150);
+    gwidget.buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW ( gwidget.dns_output));
+    gtk_text_buffer_set_text (gwidget.buffer, text, -1);
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (gwidget.scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC); 
     gtk_container_add (GTK_CONTAINER (gwidget.scrolledwindow), gwidget.dns_output); // end of scrolled window function
     packboxes(1);

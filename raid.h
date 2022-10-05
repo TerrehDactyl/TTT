@@ -73,7 +73,7 @@ char calculate_raid(int type, int disks, int size, int sets)
 				break;
 	}
 
-	snprintf ( raid.buffer, 128, "%dx %dtb disks in raid %d yields %d tb of data with X%d read increase and X%d write increase and %d drive failover\n", disks, size, type, final_size, read_gain, write_gain, failover);
+	snprintf ( raid.buffer, 128, "Capacity %d TB\nSpeed gain %dX read and %dX write gain\nFault tolerance %d\n",final_size, read_gain, write_gain, failover);
 
 	return 0;
 }

@@ -306,3 +306,139 @@ const unsigned long hash(const char *str)
         hash = ((hash << 2) + hash) + c;
     return hash;
 }
+
+
+void cairo_color(cairo_t *cr, char* color)
+{
+    float r=0, g=0, b=0;
+    switch(hash(color))
+    {
+    case YELLOW: r = 1, g = 1, b = 0;
+        break;
+    case BLUE: r = 0, g = 0, b = 1;
+        break;
+    case AQUA: r = 0, g = 1, b = 1;
+        break;
+    case INDIGO: r = 0, g = 0.11, b = 0.4;
+        break;
+    case FOREST: r = 0, g = 0.3, b = 0;
+        break;
+    case LIME: r = 0, g = 1, b = 0.2;
+        break;
+    case WINE: r = 0.2, g = 0, b = 0.2;
+        break;
+    case LAVENDER: r = 0.4, g = 0, b = 1;
+        break;
+    case GREEN: r = 0, g = 1, b = 0;
+        break;
+    case PURPLE: r = 0.5, g = 0, b = 1;
+        break;
+    case RED: r = 1, g = 0, b = 0;
+        break;
+    case ORANGE: r = 1, g = 0.5, b = 0;
+        break;
+    case PINK: r = 1, g = 0, b = 1;
+        break;
+    case WHITE: r = 1, g = 1, b = 1;
+        break;
+    case BLACK: r = 0, g = 0, b = 0;
+        break;
+    case TEAL: r = 0, g = 1, b = 0.5;
+        break;
+    case BROWN: r = 0.2, g = 0.1, b = 0.1;
+        break;
+    case GREY: r = 0.3, g = 0.3, b = 0.3;
+        break;
+    default:
+        printf("[ERROR] '%s' is not a valid color. Options are YELLOW, BLUE, GREEN, PURPLE, RED, ORANGE, PINK, WHITE, BLACK, TEAL, BROWN and GREY.\n", color);
+        break;
+    }
+    cairo_set_source_rgb (cr, r, g, b);
+}
+
+GtkWidget *create_image_area(void *callback, gpointer image, int height, int width)
+{
+	GtkWidget *widget = gtk_drawing_area_new();
+	if(height && width)
+	{
+		gtk_widget_set_size_request(widget, width, height); //sets the size of the buttons
+	}
+	g_signal_connect (G_OBJECT (widget), "draw", G_CALLBACK (callback), image);
+
+	return widget;
+}
+
+void draw_image(GtkWidget *widget, cairo_t *cr, gpointer user_data)
+{
+	const char *data = (const char *) user_data;
+	GdkPixbuf *pixbuf = createpixbuf(data); 
+	gdk_cairo_set_source_pixbuf(cr, pixbuf, 0, 0);
+	cairo_paint (cr);
+}
+
+void draw_quad_axis(cairo_t *cr, double max_x, double max_y, char *color)
+{   
+	cairo_color(cr, color); 
+    cairo_move_to (cr, -max_x, 0.0);
+    cairo_line_to (cr, max_x, 0.0);
+    cairo_move_to (cr, 0.0, -max_y);
+    cairo_line_to (cr, 0.0, max_y);
+    cairo_stroke (cr);
+    transpose = FALSE;
+}
+
+void draw_dual_axis(cairo_t *cr, double max_x, double max_y, char *color)
+{    
+	cairo_color(cr, color);
+    cairo_move_to (cr, max_x, -max_x);
+    cairo_line_to (cr, -max_x, -max_x);
+    cairo_move_to (cr, -max_y, max_y);
+    cairo_line_to (cr, -max_y, -max_y);
+    cairo_stroke (cr);
+    transpose = TRUE;
+}
+
+double *transpose_data(double arr[], size_t arr_size, double max)
+{
+	for(int i = 0; i < arr_size; i++)
+		arr[i] = -max + arr[i];
+	return arr;
+}
+
+void plot_cairo(cairo_t *cr, double xarr[], double yarr[], size_t arr_size, double max_x, double max_y, char *color)
+{
+	cairo_color(cr, color);
+	if(transpose == TRUE)
+	{
+	xarr = transpose_data(xarr, arr_size, max_x);
+	yarr = transpose_data(yarr, arr_size, max_y);
+	}
+
+	for(int i = 0; i < arr_size; i++)
+	    cairo_line_to(cr, xarr[i], yarr[i]);
+	cairo_stroke(cr);
+}
+
+GtkWidget *create_graph_area(void *callback)
+{
+    GtkWidget *widget = gtk_drawing_area_new();
+    g_signal_connect (G_OBJECT (widget), "draw", G_CALLBACK (callback), NULL);
+    return widget;
+}
+
+void create_gdk_window(GtkWidget *widget, cairo_t *cr, char *color)
+{
+    GdkRectangle da;
+    GdkWindow *window = gtk_widget_get_window(widget);
+    gdk_window_get_geometry (window, &da.x, &da.y, &da.width, &da.height); // Determine GtkDrawingArea dimensions
+    cairo_translate (cr, da.width / 2, da.height / 2);// Change the transformation matrix
+    cairo_scale (cr, ZOOM_X, -ZOOM_Y);
+    cairo_color(cr, color); // Draw on a black background 
+    cairo_paint (cr);
+}
+
+void cairo_set_pixels_and_width(cairo_t *cr, double dx, double dy)
+{
+	cairo_device_to_user_distance (cr, &dx, &dy); // Determine the data points to calculate (ie. those in the clipping zone
+    cairo_set_line_width (cr, dx);
+}

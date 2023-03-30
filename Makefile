@@ -12,9 +12,6 @@ all: ttoolbox
 %.o: %.c
 	$(CC) -c -o $(@F) $(CFLAGS) $<
 
-example0: $(OBJS)
-	$(CC) -o $(@F) $(LIBS) $(OBJS)
-
 clean:
 	rm -f $(OBJS)
 	rm -f ttoolbox

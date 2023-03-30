@@ -23,16 +23,17 @@ void button_connect_callback(GtkWidget *button, gchar *action, void *button_call
 	g_signal_connect(button, action, G_CALLBACK(button_callback), data);
 }
 
-GtkWidget *create_text_display(gboolean i, int width, int height)
+
+GtkWidget *create_text_display(gboolean i, int length, int width)
 {
 	GtkWidget *display = gtk_text_view_new(); //sets the display widget as a text display 
-	gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (display), GTK_WRAP_WORD); 
-	if (i == FALSE)
+
+	if (i == TRUE)
 	{
 		gtk_text_view_set_editable (GTK_TEXT_VIEW(display),FALSE);
 	}
 
-	gtk_widget_set_size_request(display, width, height); //sets the size of the display 
+	gtk_widget_set_size_request(display, length, width); //sets the size of the display 
 	return display;
 }
 

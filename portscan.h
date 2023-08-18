@@ -8,7 +8,7 @@ void start_scan();
 void cancel_scan();
 void create_socket(int port, const char *ipaddress, FILE *fp);
 void extract_ipaddress(const char *source_string, int ipaddress[]);
-void find_range(int start_ip[], int endip[], int range[]);
+void find_range(int start_ip[], int end_ip[], int range[]);
 char *format_ipaddress(int unformatted[]);
 void cycle_and_scan(int range[], int start_ip[], int start, int end, FILE *fp);
 
@@ -18,7 +18,7 @@ struct input_variables
 	size_t label_len;
 	size_t btn_len;
 	int start_ip[4];
-	int endip[4];
+	int end_ip[4];
 	int range[4];
 	GtkWidget *entries[4];
 	size_t entry_len;
@@ -36,9 +36,9 @@ void start_scan()
 	int end = atoi(pscan.entry_text[1]);
 
 	extract_ipaddress(pscan.entry_text[2], pscan.start_ip);
-	extract_ipaddress(pscan.entry_text[3], pscan.endip);
-	find_range(pscan.start_ip, pscan.endip, pscan.range);
-	if(pscan.endip == NULL || (pscan.range[0] == 0 && pscan.range[1] == 0 && pscan.range[2] == 0 && pscan.range[3] == 0))
+	extract_ipaddress(pscan.entry_text[3], pscan.end_ip);
+	find_range(pscan.start_ip, pscan.end_ip, pscan.range);
+	if(pscan.end_ip == NULL || (pscan.range[0] == 0 && pscan.range[1] == 0 && pscan.range[2] == 0 && pscan.range[3] == 0))
 		for(int port = start; port<=end; port++)
 			create_socket(port, pscan.entry_text[2], fp);
 	else
@@ -48,10 +48,10 @@ void start_scan()
 	system("xdg-open Results.txt");
 }
 
-void find_range(int start_ip[], int endip[], int range[])
+void find_range(int start_ip[], int end_ip[], int range[])
 {
 	for (int i = 0; i < 4; i++)
-		range[i] = endip[i] - start_ip[i];
+		range[i] = end_ip[i] - start_ip[i];
 }
 
 void cancel_scan()
@@ -69,13 +69,13 @@ void cycle_and_scan(int range[], int start_ip[], int start, int end, FILE *fp)
 	int octet = 3;
 	while(1)
 	{
-		find_range(start_ip, pscan.endip, pscan.range);
+		find_range(start_ip, pscan.end_ip, pscan.range);
 
 		if(range[3] != -1 || range[2] != 0 || range[1] != 0 || range[0] != 0)
 		{
 			while(1)
 			{
-				find_range(start_ip, pscan.endip, pscan.range);
+				find_range(start_ip, pscan.end_ip, pscan.range);
 
 				if(range[3] != -1 || range[2] != 0 || range[1] != 0 || range[0] != 0)
 				{

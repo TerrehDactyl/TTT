@@ -34,23 +34,19 @@ struct widgets
     GtkWidget *frame;
     GtkWidget *label_grid;
     GtkWidget *button_box;
-    GtkWidget *pscan_entry_grid;
     GtkWidget *nested_notebook;
     GtkWidget *nested_frame;
-    GtkComboBox *pwcrack_combo;
     GtkWidget *page_label;
     GtkWidget *child;
-    GtkComboBox *raid_type_combo;
-    GtkWidget *raid_entry_grid;
     GtkWidget *raid_entries[2];
-    GtkComboBox *dns_combo;
+    GtkComboBox *combo_box;
     GtkWidget *display;
     GtkTextBuffer *buffer;
     GtkWidget *pscan_output;
     GtkWidget *scrolled_window;
     GtkWidget *dns_output;
     GtkWidget *dns_entries[1];
-    GtkWidget *dns_entry_grid;
+    GtkWidget *entry_grid;
 }gwidget;
 
 int main( int argc, char *argv[] )
@@ -77,7 +73,7 @@ void network_scanning()
     pscan.entry_len = arraysize(pscan.entries);
     gwidget.label_grid = create_labels(entry_labels, pscan.label_len);
     gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, pscan.btn_len);
-    gwidget.pscan_entry_grid = create_entries(pscan.entry_len,pscan.entries); // seg fault is here 
+    gwidget.entry_grid = create_entries(pscan.entry_len,pscan.entries); // seg fault is here 
     gwidget.nested_notebook = create_notebook(gwidget.notebook);
     gwidget.nested_frame = create_frame_with_pagehead(gwidget.nested_notebook, "Network Scanning");
     gwidget.child = gtk_notebook_get_nth_page (GTK_NOTEBOOK(gwidget.notebook), 0);
@@ -105,13 +101,13 @@ void website_scanning()
     dns.btn_len = arraysize(button_labels);
     gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, dns.btn_len);
     dns.entry_len = arraysize(gwidget.dns_entries);
-    gwidget.dns_entry_grid = create_entries(dns.entry_len,gwidget.dns_entries);
+    gwidget.entry_grid = create_entries(dns.entry_len,gwidget.dns_entries);
     gwidget.nested_notebook = create_notebook(gwidget.notebook);
     gwidget.child = gtk_notebook_get_nth_page (GTK_NOTEBOOK(gwidget.notebook), 1);
     gwidget.page_label = gtk_label_new("Website Scanning");                       
     gtk_notebook_set_tab_label(GTK_NOTEBOOK(gwidget.notebook), gwidget.child, gwidget.page_label);
     gwidget.nested_frame = create_frame_with_pagehead(gwidget.nested_notebook, "Website Scanning");
-    gwidget.dns_combo = create_combobox(combo_labels,  dns.scan_type_len, dns_combo_cbk);
+    gwidget.combo_box = create_combobox(combo_labels,  dns.scan_type_len, dns_combo_cbk);
     GtkTextBuffer *buffer = gtk_text_buffer_new (NULL);//start of scrolled window function
     gwidget.scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     const gchar *text = {"Prefilter multiple pictures Preprocess\n"};
@@ -137,8 +133,8 @@ void raid_calculator()
     void *button_callbacks[] = {calc_raid};
     gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, raid.btn_len);
     gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Raid Calculator");
-    gwidget.raid_type_combo = create_combobox(raid_type_labels,  raid.type_label_len, raid_type_cbk);
-    gwidget.raid_entry_grid = create_entries(raid.entry_len-1, gwidget.raid_entries);
+    gwidget.combo_box = create_combobox(raid_type_labels,  raid.type_label_len, raid_type_cbk);
+    gwidget.entry_grid = create_entries(raid.entry_len-1, gwidget.raid_entries);
     gwidget.display = create_text_display(TRUE, 50, 20);
     gwidget.buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW ( gwidget.display));
     pack_boxes(2);
@@ -153,7 +149,7 @@ void passwd_cracking()
     void *button_callbacks[] = {crack};
     gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, pwcrack.btn_len);
     gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Password Cracking");
-    gwidget.pwcrack_combo = create_combobox(combo_labels,  pwcrack.combo_label_len, pwcrack_combo_cbk);
+    gwidget.combo_box = create_combobox(combo_labels,  pwcrack.combo_label_len, pwcrack_combo_cbk);
     pack_boxes(3);
 }
 
@@ -168,7 +164,7 @@ void pack_boxes(int i)
         gtk_container_add(GTK_CONTAINER(gwidget.nested_frame), vbox);
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(hbox), gwidget.label_grid, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(hbox), gwidget.pscan_entry_grid, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(hbox), gwidget.entry_grid, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(vbox), gwidget.button_box, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(hbox), gwidget.scrolled_window, FALSE, FALSE, 0); 
         break;
@@ -176,9 +172,9 @@ void pack_boxes(int i)
         case 1://website scanning
         gtk_container_add(GTK_CONTAINER(gwidget.nested_frame), vbox); 
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox), gwidget.dns_entry_grid, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(vbox), gwidget.entry_grid, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(vbox), gwidget.button_box, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(hbox), GTK_WIDGET(gwidget.dns_combo), FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(hbox), GTK_WIDGET(gwidget.combo_box), FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(hbox), gwidget.scrolled_window, FALSE, FALSE, 0); 
         break;
 
@@ -186,8 +182,8 @@ void pack_boxes(int i)
         gtk_container_add(GTK_CONTAINER(gwidget.frame), vbox); 
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(hbox), gwidget.label_grid, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(hbox), gwidget.raid_entry_grid, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(gwidget.raid_type_combo), FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(hbox), gwidget.entry_grid, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(gwidget.combo_box), FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(gwidget.button_box), FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(gwidget.display), FALSE, FALSE, 0); 
         break;
@@ -195,7 +191,7 @@ void pack_boxes(int i)
         case 3://password cracking
         gtk_container_add(GTK_CONTAINER(gwidget.frame), vbox);  
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(hbox), GTK_WIDGET(gwidget.pwcrack_combo), FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(hbox), GTK_WIDGET(gwidget.combo_box), FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(vbox), gwidget.button_box, FALSE, FALSE, 0); 
         break;
     }

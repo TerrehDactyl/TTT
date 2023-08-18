@@ -4,20 +4,20 @@
 #include <string.h>
 #include <ctype.h>
 #define MAX_INT 32767
-void startscan();
-void cancelscan();
-void createsocket(int port, const char *ipaddress, FILE *filepointer);
-void extractIpAddress(const char *sourceString, int ipaddress[]);
-void findrange(int startip[], int endip[], int range[]);
-char *formatipaddress(int unformatted[]);
-void cycleandscan(int range[], int startip[], int start, int end, FILE *filepointer);
+void start_scan();
+void cancel_scan();
+void create_socket(int port, const char *ipaddress, FILE *fp);
+void extract_ipaddress(const char *source_string, int ipaddress[]);
+void find_range(int start_ip[], int endip[], int range[]);
+char *format_ipaddress(int unformatted[]);
+void cycle_and_scan(int range[], int start_ip[], int start, int end, FILE *fp);
 
 struct input_variables
 {
-	const char *entrytext[4];
+	const char *entry_text[4];
 	size_t label_len;
 	size_t btn_len;
-	int startip[4];
+	int start_ip[4];
 	int endip[4];
 	int range[4];
 	GtkWidget *entries[4];
@@ -25,71 +25,71 @@ struct input_variables
 }pscan;
 
 gchar *pscan_btn_labels[] = {"Start Scan", "Cancel Scan"};
-void *pscan_btn_cbks[] = {startscan, cancelscan};
+void *pscan_btn_cbks[] = {start_scan, cancel_scan};
 gchar *pscan_labels[] = {"Starting Port\n", "Ending Port\n", "Start IP\n", "End IP\n"};
-void startscan()
+void start_scan()
 {
-	FILE *filepointer;
-	filepointer = fopen("Results.txt", "w");
-	get_entry_text(pscan.entries, pscan.entrytext, pscan.label_len);
-	int start = atoi(pscan.entrytext[0]);
-	int end = atoi(pscan.entrytext[1]);
+	FILE *fp;
+	fp = fopen("Results.txt", "w");
+	get_entry_text(pscan.entries, pscan.entry_text, pscan.label_len);
+	int start = atoi(pscan.entry_text[0]);
+	int end = atoi(pscan.entry_text[1]);
 
-	extractIpAddress(pscan.entrytext[2], pscan.startip);
-	extractIpAddress(pscan.entrytext[3], pscan.endip);
-	findrange(pscan.startip, pscan.endip, pscan.range);
+	extract_ipaddress(pscan.entry_text[2], pscan.start_ip);
+	extract_ipaddress(pscan.entry_text[3], pscan.endip);
+	find_range(pscan.start_ip, pscan.endip, pscan.range);
 	if(pscan.endip == NULL || (pscan.range[0] == 0 && pscan.range[1] == 0 && pscan.range[2] == 0 && pscan.range[3] == 0))
 		for(int port = start; port<=end; port++)
-			createsocket(port, pscan.entrytext[2], filepointer);
+			create_socket(port, pscan.entry_text[2], fp);
 	else
-		cycleandscan(pscan.range, pscan.startip, start, end, filepointer);
+		cycle_and_scan(pscan.range, pscan.start_ip, start, end, fp);
 
-	fclose(filepointer);
+	fclose(fp);
 	system("xdg-open Results.txt");
 }
 
-void findrange(int startip[], int endip[], int range[])
+void find_range(int start_ip[], int endip[], int range[])
 {
 	for (int i = 0; i < 4; i++)
-		range[i] = endip[i] - startip[i];
+		range[i] = endip[i] - start_ip[i];
 }
 
-void cancelscan()
+void cancel_scan()
 {exit(1);}
 
-char *formatipaddress(int unformatted[])
+char *format_ipaddress(int unformatted[])
 {
 	static char formatted[48];
 	snprintf(formatted, sizeof(formatted), "%d.%d.%d.%d", unformatted[0], unformatted[1], unformatted[2], unformatted[3]);
 	return formatted;
 }
 
-void cycleandscan(int range[], int startip[], int start, int end, FILE *filepointer)
+void cycle_and_scan(int range[], int start_ip[], int start, int end, FILE *fp)
 {
 	int octet = 3;
 	while(1)
 	{
-		findrange(startip, pscan.endip, pscan.range);
+		find_range(start_ip, pscan.endip, pscan.range);
 
 		if(range[3] != -1 || range[2] != 0 || range[1] != 0 || range[0] != 0)
 		{
 			while(1)
 			{
-				findrange(startip, pscan.endip, pscan.range);
+				find_range(start_ip, pscan.endip, pscan.range);
 
 				if(range[3] != -1 || range[2] != 0 || range[1] != 0 || range[0] != 0)
 				{
-							if(startip[octet] > 255)
+							if(start_ip[octet] > 255)
 							{
-								startip[octet] = 0;
-								startip[octet-1] += 1;
+								start_ip[octet] = 0;
+								start_ip[octet-1] += 1;
 								break;
 							}
-							g_print("startip[octet] %d, octet %d \n",startip[octet], octet);
+							g_print("start_ip[octet] %d, octet %d \n",start_ip[octet], octet);
 							for(int port = start; port<=end; port++)
-								{createsocket(port, formatipaddress(startip), filepointer);}
+								{create_socket(port, format_ipaddress(start_ip), fp);}
 
-							startip[3]++;
+							start_ip[3]++;
 				}
 				else
 					break;
@@ -103,7 +103,7 @@ void cycleandscan(int range[], int startip[], int start, int end, FILE *filepoin
 	}
 }
 
-void createsocket(int port, const char *ipaddress, FILE *filepointer)
+void create_socket(int port, const char *ipaddress, FILE *fp)
 {
 	struct sockaddr_in server_address;
 	char *result;
@@ -120,22 +120,22 @@ void createsocket(int port, const char *ipaddress, FILE *filepointer)
 		result = "open";
 
 	g_print("%s Port: %d is %s\n", ipaddress, port, result);
-	fprintf(filepointer, "%s Port: %d is %s\n", ipaddress, port, result);
+	fprintf(fp, "%s Port: %d is %s\n", ipaddress, port, result);
 	close(network_socket); 
 }
 
-void extractIpAddress(const char *sourceString, int ipaddress[])
+void extract_ipaddress(const char *source_string, int ipaddress[])
 {
-	unsigned short len = strlen(sourceString);
+	unsigned short len = strlen(source_string);
 	unsigned char oct[4]={0},cnt=0,cnt1=0;
 	char buf[5];
 
 	for(int i=0;i<len;i++)
 	{
-		if(sourceString[i]!='.')
-			buf[cnt++] = sourceString[i];
+		if(source_string[i]!='.')
+			buf[cnt++] = source_string[i];
 
-		if(sourceString[i]=='.' || i==len-1)
+		if(source_string[i]=='.' || i==len-1)
 			buf[cnt]='\0', cnt = 0, oct[cnt1++]=atoi(buf);
 	}
 	for(int i = 0; i < 4; i++)

@@ -57,8 +57,8 @@ int main( int argc, char *argv[] )
 {
     gtk_init (&argc, &argv);
     
-    gwidget.window = createwindow("TTOOLBOX", GTK_WIN_POS_CENTER, "test.png");
-    gwidget.notebook = createnotebook(gwidget.window);
+    gwidget.window = create_window("TTOOLBOX", GTK_WIN_POS_CENTER, "test.png");
+    gwidget.notebook = create_notebook(gwidget.window);
 
     network_scanning(pscan_btn_labels,pscan_btn_cbks, pscan_labels);
     website_scanning();
@@ -71,11 +71,11 @@ void network_scanning(gchar *button_labels[], void *button_callbacks[], gchar *l
 {
     pscan.label_len = arraysize(pscan_labels);
     pscan.btn_len = arraysize(pscan_btn_labels);
-    gwidget.label_grid = createlabels(label_text, pscan.label_len);
+    gwidget.label_grid = create_labels(label_text, pscan.label_len);
     pscan.entry_len = arraysize(pscan.entries);
-    gwidget.button_box = createsinglesizegrid(button_labels, button_callbacks, NULL,1, pscan.btn_len);
+    gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, pscan.btn_len);
     gwidget.pscan_entry_grid = create_entries(pscan.entry_len,pscan.entries); // seg fault is here 
-    gwidget.nested_notebook = createnotebook(gwidget.notebook);
+    gwidget.nested_notebook = create_notebook(gwidget.notebook);
     gwidget.nested_frame = create_frame_with_pagehead(gwidget.nested_notebook, "Network Scanning");
     gwidget.child = gtk_notebook_get_nth_page (GTK_NOTEBOOK(gwidget.notebook), 0);
     gwidget.page_label = gtk_label_new("Network Scanning");                         
@@ -98,10 +98,10 @@ void website_scanning()
     void *button_callbacks [] = {run_dns}; 
     dns.scan_type_len = arraysize(dns_scan_type);
     dns.btn_len = arraysize(dns_btns);
-    gwidget.button_box = createsinglesizegrid(dns_btns, button_callbacks, NULL,1, dns.btn_len);
+    gwidget.button_box = create_single_size_grid(dns_btns, button_callbacks, NULL,1, dns.btn_len);
     dns.entry_len = arraysize(gwidget.dns_entries);
     gwidget.dns_entry_grid = create_entries(dns.entry_len,gwidget.dns_entries);
-    gwidget.nested_notebook = createnotebook(gwidget.notebook);
+    gwidget.nested_notebook = create_notebook(gwidget.notebook);
     gwidget.child = gtk_notebook_get_nth_page (GTK_NOTEBOOK(gwidget.notebook), 1);
     gwidget.page_label = gtk_label_new("Website Scanning");                       
     gtk_notebook_set_tab_label(GTK_NOTEBOOK(gwidget.notebook), gwidget.child, gwidget.page_label);
@@ -125,12 +125,12 @@ void raid_calculator()
     gchar *label_text[] = {"Disks", "Size", "Sets", "Type"};
     size_t label_len = arraysize(label_text);
     gchar *button_labels[] = {"Calculate"};
-    gwidget.label_grid = createlabels(label_text, label_len);
+    gwidget.label_grid = create_labels(label_text, label_len);
     raid.btn_len = arraysize(button_labels); 
     raid.type_label_len = arraysize(raid_type_labels);
     raid.entry_len = arraysize(raid_entries);
     void *button_callbacks[] = {calc_raid};
-    gwidget.button_box = createsinglesizegrid(button_labels, button_callbacks, NULL,1, raid.btn_len);
+    gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, raid.btn_len);
     gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Raid Calculator");
     gwidget.raid_type_combo = create_combobox(raid_type_labels,  raid.type_label_len, raid_type_cbk);
     gwidget.raid_entry_grid = create_entries(raid.entry_len-1, gwidget.raid_entries);
@@ -146,7 +146,7 @@ void passwd_cracking()
     gchar *button_labels[] = {"Crack", "Cancel"};
     pwcrack.btn_len = arraysize(button_labels);
     void *button_callbacks[] = {crack};
-    gwidget.button_box = createsinglesizegrid(button_labels, button_callbacks, NULL,1, pwcrack.btn_len);
+    gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, pwcrack.btn_len);
     gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Password Cracking");
     gwidget.pwcrack_combo = create_combobox(combo_labels,  pwcrack.combo_label_len, pwcrack_combo_cbk);
     packboxes(3);

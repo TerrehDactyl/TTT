@@ -20,7 +20,7 @@ modules to integrate
 -pwcracking 
 -traceroute
 */
-void network_scanning(gchar *button_labels[], void *button_callbacks[], gchar *labeltext[]);
+void network_scanning(gchar *button_labels[], void *button_callbacks[], gchar *label_text[]);
 void website_scanning();
 void passwd_cracking();
 void raid_calculator();
@@ -67,11 +67,11 @@ int main( int argc, char *argv[] )
     show_and_destroy(gwidget.window);
 }
 
-void network_scanning(gchar *button_labels[], void *button_callbacks[], gchar *labeltext[])
+void network_scanning(gchar *button_labels[], void *button_callbacks[], gchar *label_text[])
 {
     pscan.label_len = arraysize(pscan_labels);
     pscan.btn_len = arraysize(pscan_btn_labels);
-    gwidget.label_grid = createlabels(labeltext, pscan.label_len);
+    gwidget.label_grid = createlabels(label_text, pscan.label_len);
     pscan.entry_len = arraysize(pscan.entries);
     gwidget.button_box = createsinglesizegrid(button_labels, button_callbacks, NULL,1, pscan.btn_len);
     gwidget.pscan_entry_grid = create_entries(pscan.entry_len,pscan.entries); // seg fault is here 

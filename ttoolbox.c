@@ -141,7 +141,12 @@ void raid_calculator()
 
 void passwd_cracking()
 {
+    gchar *pwcrack_combo_labels[] ={"Brute Force", "Dictionary", "Rainbow Tables"};
     pwcrack.combo_label_len = arraysize(pwcrack_combo_labels);
+    gchar *buttonlabels[] = {"Crack", "Cancel"};
+    pwcrack.btn_len = arraysize(buttonlabels);
+    void *pwcrack_cbks[] = {crack};
+    gwidget.buttonbox = createsinglesizegrid(buttonlabels, pwcrack_cbks, NULL,1, pwcrack.btn_len);
     gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Password Cracking");
     gwidget.pwcrack_combo = create_combobox(pwcrack_combo_labels,  pwcrack.combo_label_len, pwcrack_combo_cbk);
     packboxes(3);
@@ -186,6 +191,7 @@ void packboxes(int i)
         gtk_container_add(GTK_CONTAINER(gwidget.frame), vbox);  
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(hbox), GTK_WIDGET(gwidget.pwcrack_combo), FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(vbox), gwidget.buttonbox, FALSE, FALSE, 0); 
         break;
     }
 }

@@ -1,13 +1,10 @@
 void pwcrack_combo_cbk(GtkComboBox *combo_box, gpointer user_data);
-
+void crack();
 struct pw_vars
 {
 	size_t combo_label_len;
 	size_t btn_len;
 }pwcrack;
-
-gchar *pwcrack_combo_labels[] ={"Brute Force", "Dictionary", "Rainbow Tables"};
-
 void pwcrack_combo_cbk(GtkComboBox *combo_box, gpointer user_data)
 {
 	if (gtk_combo_box_get_active (combo_box) != 0) 
@@ -26,4 +23,8 @@ void pwcrack_combo_cbk(GtkComboBox *combo_box, gpointer user_data)
 			g_print("you selected the third label");
 		}
 	}
+}
+void crack()
+{
+
 }

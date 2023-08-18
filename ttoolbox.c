@@ -64,7 +64,6 @@ int main( int argc, char *argv[] )
     website_scanning();
     passwd_cracking();
     raid_calculator();
-
     show_and_destroy(gwidget.window);
 }
 
@@ -121,6 +120,76 @@ void website_scanning()
     packboxes(1);
 }
 
+void raid_calculator()
+{
+    gchar *label_text[] = {"Disks", "Size", "Sets", "Type"};
+    size_t label_len = arraysize(label_text);
+    gchar *buttonlabels[] = {"Calculate"};
+    gwidget.labelgrid = createlabels(label_text, label_len);
+    raid.btn_len = arraysize(buttonlabels); 
+    raid.type_label_len = arraysize(raid_type_labels);
+    raid.entry_len = arraysize(raid_entries);
+    void *raid_calc_cbk[] = {calc_raid};
+    gwidget.buttonbox = createsinglesizegrid(buttonlabels, raid_calc_cbk, NULL,1, raid.btn_len);
+    gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Raid Calculator");
+    gwidget.raid_type_combo = create_combobox(raid_type_labels,  raid.type_label_len, raid_type_cbk);
+    gwidget.raid_entry_grid = create_entries(raid.entry_len-1, gwidget.raid_entries);
+    gwidget.display = create_text_display(TRUE, 50, 20);
+    gwidget.buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW ( gwidget.display));
+    packboxes(2);
+}
+
+void passwd_cracking()
+{
+    pwcrack.combo_label_len = arraysize(pwcrack_combo_labels);
+    gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Password Cracking");
+    gwidget.pwcrack_combo = create_combobox(pwcrack_combo_labels,  pwcrack.combo_label_len, pwcrack_combo_cbk);
+    packboxes(3);
+}
+
+void packboxes(int i)
+{
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1); //creates a vbox without autosizing 
+    GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 1); //creates a vbox without autosizing 
+
+    switch(i)
+    {
+        case 0://network scanning 
+        gtk_container_add(GTK_CONTAINER(gwidget.nested_frame), vbox);
+        gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(hbox), gwidget.labelgrid, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(hbox), gwidget.pscan_entry_grid, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(vbox), gwidget.buttonbox, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(hbox), gwidget.scrolledwindow, FALSE, FALSE, 0); 
+        break;
+
+        case 1://website scanning
+        gtk_container_add(GTK_CONTAINER(gwidget.nested_frame), vbox); 
+        gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox), gwidget.dns_entry_grid, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(vbox), gwidget.buttonbox, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(hbox), GTK_WIDGET(gwidget.dns_combo), FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(hbox), gwidget.scrolledwindow, FALSE, FALSE, 0); 
+        break;
+
+        case 2://raid calculator
+        gtk_container_add(GTK_CONTAINER(gwidget.frame), vbox); 
+        gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(hbox), gwidget.labelgrid, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(hbox), gwidget.raid_entry_grid, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(gwidget.raid_type_combo), FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(gwidget.buttonbox), FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(gwidget.display), FALSE, FALSE, 0); 
+        break;
+
+        case 3://password cracking
+        gtk_container_add(GTK_CONTAINER(gwidget.frame), vbox);  
+        gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(hbox), GTK_WIDGET(gwidget.pwcrack_combo), FALSE, FALSE, 0); 
+        break;
+    }
+}
+
 void run_dns()
 {
     const gchar *dns_entries[dns.entry_len];
@@ -156,33 +225,6 @@ void run_dns()
     }
 }
 
-void passwd_cracking()
-{
-    pwcrack.combo_label_len = arraysize(pwcrack_combo_labels);
-    gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Password Cracking");
-    gwidget.pwcrack_combo = create_combobox(pwcrack_combo_labels,  pwcrack.combo_label_len, pwcrack_combo_cbk);
-    packboxes(2);
-}
-
-void raid_calculator()
-{
-    gchar *label_text[] = {"Disks", "Size", "Sets", "Type"};
-    size_t label_len = arraysize(label_text);
-    gchar *buttonlabels[] = {"Calculate"};
-    gwidget.labelgrid = createlabels(label_text, label_len);
-    raid.btn_len = arraysize(buttonlabels); 
-    raid.type_label_len = arraysize(raid_type_labels);
-    raid.entry_len = arraysize(raid_entries);
-    void *raid_calc_cbk[] = {calc_raid};
-    gwidget.buttonbox = createsinglesizegrid(buttonlabels, raid_calc_cbk, NULL,1, raid.btn_len);
-    gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Raid Calculator");
-    gwidget.raid_type_combo = create_combobox(raid_type_labels,  raid.type_label_len, raid_type_cbk);
-    gwidget.raid_entry_grid = create_entries(raid.entry_len-1, gwidget.raid_entries);
-    gwidget.display = create_text_display(TRUE, 50, 20);
-    gwidget.buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW ( gwidget.display));
-    packboxes(3);
-}
-
 void calc_raid()
 {
     const gchar *ascii_entries[raid.entry_len];
@@ -196,47 +238,4 @@ void calc_raid()
         raid.type = 0;
     calculate_raid(raid.type, int_entries[0], int_entries[1], int_entries[2]);
     gtk_text_buffer_set_text ( gwidget.buffer, raid.buffer, -1); //displays input.num1 
-}
-
-void packboxes(int i)
-{
-    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1); //creates a vbox without autosizing 
-    GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 1); //creates a vbox without autosizing 
-
-    switch(i)
-    {
-        case 0://network scanning 
-        gtk_container_add(GTK_CONTAINER(gwidget.nested_frame), vbox);
-        gtk_box_pack_start(GTK_BOX(vbox),  hbox, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(hbox),  gwidget.labelgrid, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(hbox),  gwidget.pscan_entry_grid, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(vbox),  gwidget.buttonbox, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(hbox),  gwidget.scrolledwindow, FALSE, FALSE, 0); 
-        break;
-
-        case 1://website scanning
-        gtk_container_add(GTK_CONTAINER(gwidget.nested_frame), vbox); 
-        gtk_box_pack_start(GTK_BOX(vbox),  hbox, FALSE, FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(vbox),  gwidget.dns_entry_grid, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(vbox),  gwidget.buttonbox, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(hbox),  GTK_WIDGET(gwidget.dns_combo), FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(hbox),  gwidget.scrolledwindow, FALSE, FALSE, 0); 
-        break;
-
-        case 2://password cracking
-        gtk_container_add(GTK_CONTAINER(gwidget.frame), vbox);  
-        gtk_box_pack_start(GTK_BOX(vbox),  hbox, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(hbox),  GTK_WIDGET(gwidget.pwcrack_combo), FALSE, FALSE, 0); 
-        break;
-
-        case 3://raid calculator
-        gtk_container_add(GTK_CONTAINER(gwidget.frame), vbox); 
-        gtk_box_pack_start(GTK_BOX(vbox),  hbox, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(hbox),  gwidget.labelgrid, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(hbox),  gwidget.raid_entry_grid, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(vbox),  GTK_WIDGET(gwidget.raid_type_combo), FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(vbox),  GTK_WIDGET(gwidget.buttonbox), FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(vbox),  GTK_WIDGET(gwidget.display), FALSE, FALSE, 0); 
-        break;
-    }
 }

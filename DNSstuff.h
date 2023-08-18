@@ -30,7 +30,6 @@ struct dns_vars
 	size_t entry_len;
 	gchar command[256];
 	gchar *selection;
-
 }dns;
 
 gchar *dns_scan_type[] = {"Name Server", "AAAA", "TXT", "MX", "IP", "SSL Expiration", "HTTP","Trace Route","WHOIS", "What's My IP","Domain Expiration"};
@@ -79,5 +78,5 @@ system("dig +short myip.opendns.com @resolver1.opendns.com");
 
 void dns_combo_cbk(GtkComboBox *combo_box, gpointer user_data)
 {
-dns.selection = gtk_combo_box_text_get_active_text (GTK_COMBO_BOX_TEXT(combo_box));
+dns.selection = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo_box));
 }

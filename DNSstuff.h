@@ -1,15 +1,4 @@
 #include <openssl/sha.h>
-void run_dig(const char *domain, char *param);
-void traceroute(const char *domain);
-void whois(const char *domain);
-void get_ssl_expiration(const char *domain);
-void get_http_status(const char *website);
-void get_domain_expiration(const char *domain);
-void whats_my_ip();
-void dns_combo_cbk(GtkComboBox *combo_box, gpointer user_data);
-void run_dns();
-void clr_dns_sel();
-void prnt_dns_sel();
 
 #define AAAA 25765
 #define NAMESERVER 2223184069

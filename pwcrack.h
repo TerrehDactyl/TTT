@@ -1,5 +1,3 @@
-void pwcrack_combo_cbk(GtkComboBox *combo_box, gpointer user_data);
-void crack();
 struct pw_vars
 {
 	size_t combo_label_len;

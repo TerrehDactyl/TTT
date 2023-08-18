@@ -25,7 +25,7 @@ void website_scanning();
 void passwd_cracking();
 void raid_calculator();
 void pack_boxes(int i);
-void calc_raid();
+void run_raid();
 void run_dns();
 struct widgets
 {
@@ -123,17 +123,17 @@ void website_scanning()
 
 void raid_calculator()
 {
-    gchar *entry_labels[] = {"Disks", "Size", "Sets", "Type"};
-    size_t entry_len = arraysize(entry_labels);
+    gchar *combo_labels[] = {"0", "1", "5", "6", "10", "50", "60"};
+    gchar *entry_labels[] = {"Type", "Disks", "Size", "Sets"};
     gchar *button_labels[] = {"Calculate"};
-    gwidget.label_grid = create_labels(entry_labels, entry_len);
+    raid.entry_len = arraysize(entry_labels);
+    gwidget.label_grid = create_labels(entry_labels, raid.entry_len);
     raid.btn_len = arraysize(button_labels); 
-    raid.type_label_len = arraysize(raid_type_labels);
-    raid.entry_len = arraysize(raid_entries);
-    void *button_callbacks[] = {calc_raid};
+    raid.combo_len = arraysize(combo_labels);
+    void *button_callbacks[] = {run_raid};
     gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, raid.btn_len);
     gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Raid Calculator");
-    gwidget.combo_box = create_combobox(raid_type_labels,  raid.type_label_len, raid_type_cbk);
+    gwidget.combo_box = create_combobox(combo_labels,  raid.combo_len, raid_type_cbk);
     gwidget.entry_grid = create_entries(raid.entry_len-1, gwidget.raid_entries);
     gwidget.display = create_text_display(TRUE, 50, 20);
     gwidget.buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW ( gwidget.display));
@@ -143,8 +143,8 @@ void raid_calculator()
 void passwd_cracking()
 {
     gchar *combo_labels[] ={"Brute Force", "Dictionary", "Rainbow Tables"};
-    pwcrack.combo_label_len = arraysize(combo_labels);
     gchar *button_labels[] = {"Crack", "Cancel"};
+    pwcrack.combo_label_len = arraysize(combo_labels);
     pwcrack.btn_len = arraysize(button_labels);
     void *button_callbacks[] = {crack};
     gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, pwcrack.btn_len);
@@ -197,6 +197,22 @@ void pack_boxes(int i)
     }
 }
 
+void run_raid()
+{
+    const gchar *ascii_entries[raid.entry_len];
+    int int_entries[raid.entry_len];
+    get_entry_text(gwidget.raid_entries, ascii_entries, raid.entry_len);
+
+    for(int i = 0; i < raid.entry_len-1; i++) // segfaults without this....wtf why?!?!
+        int_entries[i] = atoi(ascii_entries[i]);
+
+    if(&raid.type == NULL)
+        raid.type = 0;
+    calculate_raid(raid.type, int_entries[0], int_entries[1], int_entries[2]);
+    gtk_text_buffer_set_text ( gwidget.buffer, raid.buffer, -1); //displays input.num1 
+}
+
+
 void run_dns()
 {
     const gchar *dns_entries[dns.entry_len];
@@ -230,19 +246,4 @@ void run_dns()
         case DOMAIN_EXP: get_domain_expiration(domain);
         break;
     }
-}
-
-void calc_raid()
-{
-    const gchar *ascii_entries[raid.entry_len];
-    int int_entries[raid.entry_len];
-    get_entry_text(gwidget.raid_entries, ascii_entries, raid.entry_len);
-
-    for(int i = 0; i < raid.entry_len-1; i++) // segfaults without this....wtf why?!?!
-        int_entries[i] = atoi(ascii_entries[i]);
-
-    if(&raid.type == NULL)
-        raid.type = 0;
-    calculate_raid(raid.type, int_entries[0], int_entries[1], int_entries[2]);
-    gtk_text_buffer_set_text ( gwidget.buffer, raid.buffer, -1); //displays input.num1 
 }

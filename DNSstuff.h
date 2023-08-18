@@ -32,9 +32,6 @@ struct dns_vars
 	gchar *selection;
 }dns;
 
-gchar *dns_scan_type[] = {"Name Server", "AAAA", "TXT", "MX", "IP", "SSL Expiration", "HTTP","Trace Route","WHOIS", "What's My IP","Domain Expiration"};
-gchar *dns_btns[] = {"Run"};
-
 void run_dig(const char *domain, char *param)
 {
 sprintf(dns.command, "dig %s %s +short", param, domain);

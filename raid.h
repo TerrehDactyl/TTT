@@ -1,15 +1,11 @@
 struct raid_vars
 {
-	size_t type_label_len;
+	size_t combo_len;
 	size_t entry_len;
 	size_t btn_len;
 	int type;
 	char buffer[128];
 }raid;
-
-gchar *raid_type_labels[] = {"0", "1", "5", "6", "10", "50", "60"};
-gchar *raid_entries[] = {"Type", "Disks", "Size", "Sets"};
-
 char calculate_raid(int type, int disks, int size, int sets)
 {
 	int write_gain = 0;

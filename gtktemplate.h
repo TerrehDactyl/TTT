@@ -20,9 +20,8 @@
 #define FOREST 796216
 #define LIME 32396
 #define WINE 33776
-#define ZOOM_X  100.0
-#define ZOOM_Y  100.0
-
+#define ZOOM_X 100.0
+#define ZOOM_Y 100.0
 
 gboolean transpose = FALSE;
 
@@ -46,7 +45,6 @@ void button_connect_callback(GtkWidget *button, gchar *action, void *button_call
 {
 	g_signal_connect(button, action, G_CALLBACK(button_callback), data);
 }
-
 
 GtkWidget *create_text_display(gboolean i, int length, int width)
 {
@@ -120,7 +118,6 @@ GtkWidget *create_custom_window(char * title, GtkWindowType type, GtkWindowPosit
 	{
 		gtk_window_set_default_size ((GtkWindow *)widget, width, height);
 	}
-
 	return widget;
 }
 
@@ -142,7 +139,7 @@ GtkWidget *create_entries(int entry_len, GtkWidget *entries[]) //segfaults?
 		entries[i]= gtk_entry_new();
 		gtk_grid_attach(GTK_GRID(entrygrid), entries[i], 0, i, 1, 1); //sets the defaults for creating each table button
 	}
-set_spacing(entrygrid, 4, 4);
+	set_spacing(entrygrid, 4, 4);
 	return entrygrid;
 }
 
@@ -232,7 +229,7 @@ GtkWidget *create_checkbox(GtkWidget *window, const gchar *label, gboolean statu
 	GtkWidget *checkbutton = gtk_check_button_new_with_label (label);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbutton), status);
 	g_signal_connect (GTK_TOGGLE_BUTTON (checkbutton), "toggled", G_CALLBACK (callback), window);
-//gtk_container_add (GTK_CONTAINER (box), checkbutton);
+	//gtk_container_add (GTK_CONTAINER (box), checkbutton);
 	return checkbutton;
 }
 
@@ -296,7 +293,6 @@ void createfilechoosers(GtkButton *button, location* data)
 	if (res == GTK_RESPONSE_ACCEPT)
 	  {
 	   GtkFileChooser *chooser = GTK_FILE_CHOOSER (filechoosers);
-
 	   data->pointer[data->current] = gtk_file_chooser_get_filename (chooser);
 	   data->current++;
 	  }

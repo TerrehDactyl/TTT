@@ -24,7 +24,7 @@ struct input_variables
 	size_t entry_len;
 }pscan;
 
-gchar *pscan_btn_labels[] ={"Start Scan", "Cancel Scan"};
+gchar *pscan_btn_labels[] = {"Start Scan", "Cancel Scan"};
 void *pscan_btn_cbks[] = {startscan, cancelscan};
 gchar *pscan_labels[] = {"Starting Port\n", "Ending Port\n", "Start IP\n", "End IP\n"};
 void startscan()
@@ -82,7 +82,7 @@ void cycleandscan(int range[], int startip[], int start, int end, FILE *filepoin
 							if(startip[octet] > 255)
 							{
 								startip[octet] = 0;
-								startip[octet-1]+=1;
+								startip[octet-1] += 1;
 								break;
 							}
 							g_print("startip[octet] %d, octet %d \n",startip[octet], octet);

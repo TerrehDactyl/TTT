@@ -1,1 +1,0 @@
-gchar *pwcrack_[] ={"Start Scan", "Cancel Scan"};

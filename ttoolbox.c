@@ -20,7 +20,7 @@ modules to integrate
 -pwcracking 
 -traceroute
 */
-void network_scanning(gchar *buttonlabels[], void *buttoncallbacks[], gchar *labeltext[]);
+void network_scanning(gchar *button_labels[], void *button_callbacks[], gchar *labeltext[]);
 void website_scanning();
 void passwd_cracking();
 void raid_calculator();
@@ -32,8 +32,8 @@ struct widgets
     GtkWidget *window;
     GtkWidget *notebook;
     GtkWidget *frame;
-    GtkWidget *labelgrid;
-    GtkWidget *buttonbox;
+    GtkWidget *label_grid;
+    GtkWidget *button_box;
     GtkWidget *pscan_entry_grid;
     GtkWidget *nested_notebook;
     GtkWidget *nested_frame;
@@ -47,7 +47,7 @@ struct widgets
     GtkWidget *display;
     GtkTextBuffer *buffer;
     GtkWidget *pscan_output;
-    GtkWidget *scrolledwindow;
+    GtkWidget *scrolled_window;
     GtkWidget *dns_output;
     GtkWidget *dns_entries[1];
     GtkWidget *dns_entry_grid;
@@ -67,13 +67,13 @@ int main( int argc, char *argv[] )
     show_and_destroy(gwidget.window);
 }
 
-void network_scanning(gchar *buttonlabels[], void *buttoncallbacks[], gchar *labeltext[])
+void network_scanning(gchar *button_labels[], void *button_callbacks[], gchar *labeltext[])
 {
     pscan.label_len = arraysize(pscan_labels);
     pscan.btn_len = arraysize(pscan_btn_labels);
-    gwidget.labelgrid = createlabels(labeltext, pscan.label_len);
+    gwidget.label_grid = createlabels(labeltext, pscan.label_len);
     pscan.entry_len = arraysize(pscan.entries);
-    gwidget.buttonbox = createsinglesizegrid(buttonlabels, buttoncallbacks, NULL,1, pscan.btn_len);
+    gwidget.button_box = createsinglesizegrid(button_labels, button_callbacks, NULL,1, pscan.btn_len);
     gwidget.pscan_entry_grid = create_entries(pscan.entry_len,pscan.entries); // seg fault is here 
     gwidget.nested_notebook = createnotebook(gwidget.notebook);
     gwidget.nested_frame = create_frame_with_pagehead(gwidget.nested_notebook, "Network Scanning");
@@ -81,24 +81,24 @@ void network_scanning(gchar *buttonlabels[], void *buttoncallbacks[], gchar *lab
     gwidget.page_label = gtk_label_new("Network Scanning");                         
     gtk_notebook_set_tab_label(GTK_NOTEBOOK(gwidget.notebook), gwidget.child, gwidget.page_label);
     GtkTextBuffer *buffer = gtk_text_buffer_new (NULL);
-    gwidget.scrolledwindow = gtk_scrolled_window_new(NULL, NULL);
+    gwidget.scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     const gchar *text = {"Prefilter multiple pictures Preprocess\n"};
     gtk_text_buffer_set_text (buffer, text, -1);
     gwidget.pscan_output = gtk_text_view_new_with_buffer (buffer);
     gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (gwidget.pscan_output), GTK_WRAP_WORD); 
     gtk_text_view_set_editable(GTK_TEXT_VIEW(gwidget.pscan_output), FALSE);
   //gtk_widget_set_sensitive(GTK_WIDGET(gwidget.pscan_output),FALSE);
-    gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (gwidget.scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC); 
-    gtk_container_add (GTK_CONTAINER (gwidget.scrolledwindow), gwidget.pscan_output);
+    gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (gwidget.scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC); 
+    gtk_container_add (GTK_CONTAINER (gwidget.scrolled_window), gwidget.pscan_output);
     packboxes(0);
 }
 
 void website_scanning()
 {
-    void *buttoncallbacks [] = {run_dns}; 
+    void *button_callbacks [] = {run_dns}; 
     dns.scan_type_len = arraysize(dns_scan_type);
     dns.btn_len = arraysize(dns_btns);
-    gwidget.buttonbox = createsinglesizegrid(dns_btns, buttoncallbacks, NULL,1, dns.btn_len);
+    gwidget.button_box = createsinglesizegrid(dns_btns, button_callbacks, NULL,1, dns.btn_len);
     dns.entry_len = arraysize(gwidget.dns_entries);
     gwidget.dns_entry_grid = create_entries(dns.entry_len,gwidget.dns_entries);
     gwidget.nested_notebook = createnotebook(gwidget.notebook);
@@ -108,15 +108,15 @@ void website_scanning()
     gwidget.nested_frame = create_frame_with_pagehead(gwidget.nested_notebook, "Website Scanning");
     gwidget.dns_combo = create_combobox(dns_scan_type,  dns.scan_type_len, dns_combo_cbk);
     GtkTextBuffer *buffer = gtk_text_buffer_new (NULL);//start of scrolled window function
-    gwidget.scrolledwindow = gtk_scrolled_window_new(NULL, NULL);
+    gwidget.scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     const gchar *text = {"Prefilter multiple pictures Preprocess\n"};
     gtk_text_buffer_set_text (buffer, text, -1);
     gwidget.dns_output = gtk_text_view_new_with_buffer (buffer);
     gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (gwidget.dns_output), GTK_WRAP_WORD); 
     gtk_text_view_set_editable(GTK_TEXT_VIEW(gwidget.dns_output), FALSE);
   //gtk_widget_set_sensitive(GTK_WIDGET(gwidget.pscan_output),FALSE);
-    gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (gwidget.scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC); 
-    gtk_container_add (GTK_CONTAINER (gwidget.scrolledwindow), gwidget.dns_output); // end of scrolled window function
+    gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (gwidget.scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC); 
+    gtk_container_add (GTK_CONTAINER (gwidget.scrolled_window), gwidget.dns_output); // end of scrolled window function
     packboxes(1);
 }
 
@@ -124,13 +124,13 @@ void raid_calculator()
 {
     gchar *label_text[] = {"Disks", "Size", "Sets", "Type"};
     size_t label_len = arraysize(label_text);
-    gchar *buttonlabels[] = {"Calculate"};
-    gwidget.labelgrid = createlabels(label_text, label_len);
-    raid.btn_len = arraysize(buttonlabels); 
+    gchar *button_labels[] = {"Calculate"};
+    gwidget.label_grid = createlabels(label_text, label_len);
+    raid.btn_len = arraysize(button_labels); 
     raid.type_label_len = arraysize(raid_type_labels);
     raid.entry_len = arraysize(raid_entries);
-    void *raid_calc_cbk[] = {calc_raid};
-    gwidget.buttonbox = createsinglesizegrid(buttonlabels, raid_calc_cbk, NULL,1, raid.btn_len);
+    void *button_callbacks[] = {calc_raid};
+    gwidget.button_box = createsinglesizegrid(button_labels, button_callbacks, NULL,1, raid.btn_len);
     gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Raid Calculator");
     gwidget.raid_type_combo = create_combobox(raid_type_labels,  raid.type_label_len, raid_type_cbk);
     gwidget.raid_entry_grid = create_entries(raid.entry_len-1, gwidget.raid_entries);
@@ -141,14 +141,14 @@ void raid_calculator()
 
 void passwd_cracking()
 {
-    gchar *pwcrack_combo_labels[] ={"Brute Force", "Dictionary", "Rainbow Tables"};
-    pwcrack.combo_label_len = arraysize(pwcrack_combo_labels);
-    gchar *buttonlabels[] = {"Crack", "Cancel"};
-    pwcrack.btn_len = arraysize(buttonlabels);
-    void *pwcrack_cbks[] = {crack};
-    gwidget.buttonbox = createsinglesizegrid(buttonlabels, pwcrack_cbks, NULL,1, pwcrack.btn_len);
+    gchar *combo_labels[] ={"Brute Force", "Dictionary", "Rainbow Tables"};
+    pwcrack.combo_label_len = arraysize(combo_labels);
+    gchar *button_labels[] = {"Crack", "Cancel"};
+    pwcrack.btn_len = arraysize(button_labels);
+    void *button_callbacks[] = {crack};
+    gwidget.button_box = createsinglesizegrid(button_labels, button_callbacks, NULL,1, pwcrack.btn_len);
     gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Password Cracking");
-    gwidget.pwcrack_combo = create_combobox(pwcrack_combo_labels,  pwcrack.combo_label_len, pwcrack_combo_cbk);
+    gwidget.pwcrack_combo = create_combobox(combo_labels,  pwcrack.combo_label_len, pwcrack_combo_cbk);
     packboxes(3);
 }
 
@@ -162,28 +162,28 @@ void packboxes(int i)
         case 0://network scanning 
         gtk_container_add(GTK_CONTAINER(gwidget.nested_frame), vbox);
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(hbox), gwidget.labelgrid, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(hbox), gwidget.label_grid, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(hbox), gwidget.pscan_entry_grid, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(vbox), gwidget.buttonbox, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(hbox), gwidget.scrolledwindow, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(vbox), gwidget.button_box, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(hbox), gwidget.scrolled_window, FALSE, FALSE, 0); 
         break;
 
         case 1://website scanning
         gtk_container_add(GTK_CONTAINER(gwidget.nested_frame), vbox); 
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox), gwidget.dns_entry_grid, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(vbox), gwidget.buttonbox, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(vbox), gwidget.button_box, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(hbox), GTK_WIDGET(gwidget.dns_combo), FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(hbox), gwidget.scrolledwindow, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(hbox), gwidget.scrolled_window, FALSE, FALSE, 0); 
         break;
 
         case 2://raid calculator
         gtk_container_add(GTK_CONTAINER(gwidget.frame), vbox); 
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(hbox), gwidget.labelgrid, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(hbox), gwidget.label_grid, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(hbox), gwidget.raid_entry_grid, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(gwidget.raid_type_combo), FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(gwidget.buttonbox), FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(gwidget.button_box), FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(gwidget.display), FALSE, FALSE, 0); 
         break;
 
@@ -191,7 +191,7 @@ void packboxes(int i)
         gtk_container_add(GTK_CONTAINER(gwidget.frame), vbox);  
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(hbox), GTK_WIDGET(gwidget.pwcrack_combo), FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(vbox), gwidget.buttonbox, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(vbox), gwidget.button_box, FALSE, FALSE, 0); 
         break;
     }
 }

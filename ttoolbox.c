@@ -75,7 +75,7 @@ void network_scanning(gchar *buttonlabels[], void *buttoncallbacks[], gchar *lab
     gwidget.labelgrid = createlabels(labeltext, pscan.label_len);
     pscan.entry_len = arraysize(pscan.entries);
     gwidget.buttonbox = createsinglesizegrid(buttonlabels, buttoncallbacks, NULL,1, pscan.btn_len);
-    gwidget.pscan_entry_grid = create_entries(pscan.entry_len,pscan.entries);
+    gwidget.pscan_entry_grid = create_entries(pscan.entry_len,pscan.entries); // seg fault is here 
     gwidget.nested_notebook = createnotebook(gwidget.notebook);
     gwidget.nested_frame = create_frame_with_pagehead(gwidget.nested_notebook, "Network Scanning");
     gwidget.child = gtk_notebook_get_nth_page (GTK_NOTEBOOK(gwidget.notebook), 0);
@@ -83,7 +83,7 @@ void network_scanning(gchar *buttonlabels[], void *buttoncallbacks[], gchar *lab
     gtk_notebook_set_tab_label(GTK_NOTEBOOK(gwidget.notebook), gwidget.child, gwidget.page_label);
     GtkTextBuffer *buffer = gtk_text_buffer_new (NULL);
     gwidget.scrolledwindow = gtk_scrolled_window_new(NULL, NULL);
-    const gchar *text = {"Prefilteriem ltiple pictures Preprocess\n"};
+    const gchar *text = {"Prefilter multiple pictures Preprocess\n"};
     gtk_text_buffer_set_text (buffer, text, -1);
     gwidget.pscan_output = gtk_text_view_new_with_buffer (buffer);
     gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (gwidget.pscan_output), GTK_WRAP_WORD); 
@@ -110,7 +110,7 @@ void website_scanning()
     gwidget.dns_combo = create_combobox(dns_scan_type,  dns.scan_type_len, dns_combo_cbk);
     GtkTextBuffer *buffer = gtk_text_buffer_new (NULL);//start of scrolled window function
     gwidget.scrolledwindow = gtk_scrolled_window_new(NULL, NULL);
-    const gchar *text = {"Prefilteriem ltiple pictures Preprocess\n"};
+    const gchar *text = {"Prefilter multiple pictures Preprocess\n"};
     gtk_text_buffer_set_text (buffer, text, -1);
     gwidget.dns_output = gtk_text_view_new_with_buffer (buffer);
     gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (gwidget.dns_output), GTK_WRAP_WORD); 

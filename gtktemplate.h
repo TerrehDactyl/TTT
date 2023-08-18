@@ -1,7 +1,31 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
-/* file chooser functions, menu functions
-*/
+#include <cairo.h>
+/* file chooser functions, menu functions*/
+#define YELLOW 848749
+#define BLUE 31261
+#define GREEN 159890
+#define PURPLE 831441
+#define RED 6580
+#define ORANGE 824241
+#define PINK 32907
+#define WHITE 168806
+#define BLACK 155902
+#define TEAL 33243
+#define BROWN 157105
+#define GREY 31976
+#define AQUA 31257
+#define INDIGO 803251
+#define LAVENDER 20167494
+#define FOREST 796216
+#define LIME 32396
+#define WINE 33776
+#define ZOOM_X  100.0
+#define ZOOM_Y  100.0
+
+
+gboolean transpose = FALSE;
+
 typedef struct variables
 {
 	char *pointer[5];
@@ -37,12 +61,12 @@ GtkWidget *create_text_display(gboolean i, int length, int width)
 	return display;
 }
 
-GtkWidget *create_frame_with_pagehead(GtkWidget *notebook, gchar *pagehead)
+GtkWidget *create_frame_with_pagehead(GtkWidget *notebook, gchar pageheads[])
 {
-	GtkWidget *frame = gtk_frame_new (pagehead);                                       
-	GtkWidget *pagelabel = gtk_label_new(pagehead);							
+	GtkWidget *frame = gtk_frame_new (pageheads);                                       
+	GtkWidget *pagelabel = gtk_label_new(pageheads);							
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 10);                  
-	gtk_widget_set_size_request (frame, 500, 75);                                
+	gtk_widget_set_size_request (frame, 100, 75);                                
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), frame, pagelabel); 
 	return frame;
 }
@@ -72,10 +96,18 @@ GtkWidget *createwindow(char * title, GtkWindowPosition position, const gchar *f
 	gtk_window_set_title(GTK_WINDOW(widget), title); //sets a window title 
 	gtk_window_set_position(GTK_WINDOW(widget), position); //opens the window in the center of the screen
     gtk_window_set_icon(GTK_WINDOW(widget), createpixbuf(filename));
-
 	return widget;
 }
 
+GtkWidget *create_sized_window(char * title, GtkWindowPosition position, int HEIGHT, int WIDTH, const gchar *filename) 
+{
+	GtkWidget *widget = gtk_window_new(GTK_WINDOW_TOPLEVEL); //creates toplevel window
+	gtk_window_set_title(GTK_WINDOW(widget), title); //sets a window title 
+	gtk_window_set_position(GTK_WINDOW(widget), position); //opens the window in the center of the screen
+    gtk_window_set_icon(GTK_WINDOW(widget), createpixbuf(filename));
+    gtk_window_set_default_size (GTK_WINDOW (widget), WIDTH, HEIGHT);
+	return widget;
+}
 
 GtkWidget *create_custom_window(char * title, GtkWindowType type, GtkWindowPosition position, const gchar *filename, int width, int height) 
 {
@@ -102,7 +134,7 @@ GtkWidget *createnotebook(GtkWidget *window)
 	return notebook;
 }
 
-GtkWidget *create_entries(int entry_len, GtkWidget *entries[]) 
+GtkWidget *create_entries(int entry_len, GtkWidget *entries[]) //segfaults? 
 {
 	GtkWidget *entrygrid = gtk_grid_new();
 	for(int i = 0; i < entry_len; i++)
@@ -111,7 +143,7 @@ GtkWidget *create_entries(int entry_len, GtkWidget *entries[])
 		gtk_grid_attach(GTK_GRID(entrygrid), entries[i], 0, i, 1, 1); //sets the defaults for creating each table button
 	}
 set_spacing(entrygrid, 4, 4);
-return entrygrid;
+	return entrygrid;
 }
 
 GtkComboBox *create_combobox(gchar *combo_labels[], size_t combo_size, void *callback) 
@@ -218,16 +250,16 @@ GtkWidget *createradiobuttons(gchar *radiolabels[], void *radiocallback[], int a
 	GtkWidget *grid = gtk_grid_new();
 	GtkWidget *rootbutton = gtk_radio_button_new_with_label(NULL, radiolabels[0]);
 	button_connect_callback(rootbutton,"clicked", radiocallback[0], NULL);
-gtk_grid_attach(GTK_GRID(grid), rootbutton, 0, 0, 1, 1); //sets the defaults for creating each table button
-GtkWidget *labels;
-for (int i = 1; i<arraysize; i++)
-{
-	labels = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(rootbutton), radiolabels[i]);
-gtk_grid_attach(GTK_GRID(grid), labels, i, 0, 1, 1); //sets the defaults for creating each table button
-gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(labels), FALSE);
-button_connect_callback(labels, "clicked", radiocallback[i], NULL);
-}
-return grid;
+	gtk_grid_attach(GTK_GRID(grid), rootbutton, 0, 0, 1, 1); //sets the defaults for creating each table button
+	GtkWidget *labels;
+	for (int i = 1; i<arraysize; i++)
+	{
+		labels = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(rootbutton), radiolabels[i]);
+		gtk_grid_attach(GTK_GRID(grid), labels, i, 0, 1, 1); //sets the defaults for creating each table button
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(labels), FALSE);
+		button_connect_callback(labels, "clicked", radiocallback[i], NULL);
+	}
+	return grid;
 }
 
 GtkWidget *createmenu(gchar *headers, gchar *menu_array[], int arraylen, void *callback[])
@@ -251,24 +283,24 @@ GtkWidget *createmenu(gchar *headers, gchar *menu_array[], int arraylen, void *c
 
 void createfilechoosers(GtkButton *button, location* data)
 {
-GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
-gint res;
-GtkWindow *new_window;
-new_window = (GtkWindow *)gtk_window_new(GTK_WINDOW_POPUP);
-GtkWidget *filechoosers = gtk_file_chooser_dialog_new ("Open File", new_window, action, ("_Cancel"), GTK_RESPONSE_CANCEL, ("_Open"), GTK_RESPONSE_ACCEPT, NULL);
-res = gtk_dialog_run (GTK_DIALOG (filechoosers));
-if(data->current == data->max)
-{
-	data->current = 0;
-}
-if (res == GTK_RESPONSE_ACCEPT)
-  {
-   GtkFileChooser *chooser = GTK_FILE_CHOOSER (filechoosers);
+	GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+	gint res;
+	GtkWindow *new_window;
+	new_window = (GtkWindow *)gtk_window_new(GTK_WINDOW_POPUP);
+	GtkWidget *filechoosers = gtk_file_chooser_dialog_new ("Open File", new_window, action, ("_Cancel"), GTK_RESPONSE_CANCEL, ("_Open"), GTK_RESPONSE_ACCEPT, NULL);
+	res = gtk_dialog_run (GTK_DIALOG (filechoosers));
+	if(data->current == data->max)
+	{
+		data->current = 0;
+	}
+	if (res == GTK_RESPONSE_ACCEPT)
+	  {
+	   GtkFileChooser *chooser = GTK_FILE_CHOOSER (filechoosers);
 
-   data->pointer[data->current] = gtk_file_chooser_get_filename (chooser);
-   data->current++;
-  }
-gtk_widget_destroy (filechoosers);
+	   data->pointer[data->current] = gtk_file_chooser_get_filename (chooser);
+	   data->current++;
+	  }
+	gtk_widget_destroy (filechoosers);
 }
 
 GtkWidget *create_progress_bar(void *callback)
@@ -276,26 +308,6 @@ GtkWidget *create_progress_bar(void *callback)
 	GtkWidget *progress_bar = gtk_progress_bar_new ();
 	g_timeout_add (500, callback, GTK_PROGRESS_BAR (progress_bar));
 	return progress_bar;
-}
-
-GtkWidget *create_drawing_area(void *callback, gpointer image, int height, int width)
-{
-	GtkWidget *widget = gtk_drawing_area_new();
-	if(height && width)
-	{
-		gtk_widget_set_size_request(widget, width, height); //sets the size of the buttons
-	}
-	g_signal_connect (G_OBJECT (widget), "draw", G_CALLBACK (callback), image);
-
-	return widget;
-}
-
-void draw_image(GtkWidget *widget, cairo_t *cr, gpointer user_data)
-{
-	const char *data = (const char *) user_data;
-	GdkPixbuf *pixbuf = createpixbuf(data); 
-	gdk_cairo_set_source_pixbuf(cr, pixbuf, 0, 0);
-	cairo_paint (cr);
 }
 
 const unsigned long hash(const char *str) 
@@ -307,7 +319,6 @@ const unsigned long hash(const char *str)
         hash = ((hash << 2) + hash) + c;
     return hash;
 }
-
 
 void cairo_color(cairo_t *cr, char* color)
 {
@@ -351,7 +362,7 @@ void cairo_color(cairo_t *cr, char* color)
     case GREY: r = 0.3, g = 0.3, b = 0.3;
         break;
     default:
-        printf("[ERROR] '%s' is not a valid color. Options are YELLOW, BLUE, GREEN, PURPLE, RED, ORANGE, PINK, WHITE, BLACK, TEAL, BROWN and GREY.\n", color);
+        printf("[ERROR] '%s' is not a valid color. Options are YELLOW, BLUE, AQUA, INDIGO, FOREST, LIME, WINE, LAVENDER, GREEN, PURPLE, RED, ORANGE, PINK, WHITE, BLACK, TEAL, BROWN and GREY.\n", color);
         break;
     }
     cairo_set_source_rgb (cr, r, g, b);

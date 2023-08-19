@@ -6,6 +6,7 @@ struct raid_vars
 	int type;
 	char buffer[128];
 }raid;
+
 char calculate_raid(int type, int disks, int size, int sets)
 {
 	int write_gain = 0;
@@ -69,4 +70,19 @@ void raid_type_cbk(GtkComboBox *combo_box, gpointer user_data)
 {
 	gchar *selection = gtk_combo_box_text_get_active_text (GTK_COMBO_BOX_TEXT(combo_box));
 	raid.type = atoi(selection);
+}
+
+void run_raid() //this whole functions is a lot of wtf, i'm sure i can do this like, WAY better.
+{
+    const gchar *ascii_entries[raid.entry_len];
+    int int_entries[raid.entry_len]; //wtf
+    get_entry_text(gwidget.raid_entries, ascii_entries, raid.entry_len);
+
+    for(int i = 0; i < raid.entry_len-1; i++) // segfaults without this....wtf why?!?!
+        int_entries[i] = atoi(ascii_entries[i]);
+
+    if(&raid.type == NULL) //wtf this is dumb
+        raid.type = 0;
+    calculate_raid(raid.type, int_entries[0], int_entries[1], int_entries[2]);
+    gtk_text_buffer_set_text ( gwidget.buffer, raid.buffer, -1); //displays input.num1 
 }

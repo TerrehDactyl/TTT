@@ -1,5 +1,4 @@
 #include <openssl/sha.h>
-
 #define AAAA 25765
 #define NAMESERVER 2223184069
 #define TXT 5749
@@ -65,4 +64,39 @@ system("dig +short myip.opendns.com @resolver1.opendns.com");
 void dns_combo_cbk(GtkComboBox *combo_box, gpointer user_data)
 {
 dns.selection = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo_box));
+}
+
+void run_dns()
+{
+    const gchar *dns_entries[dns.entry_len];
+    get_entry_text(gwidget.dns_entries, dns_entries, dns.entry_len);
+    const gchar *domain = dns_entries[0];
+    if(dns.selection == NULL)
+        dns.selection = "Name Server";
+    
+    switch(hash(dns.selection))
+    {
+        case AAAA: run_dig(domain, "aaaa");
+        break;
+        case NAMESERVER: run_dig(domain, "NS");
+        break;
+        case TXT: run_dig(domain, "txt"); 
+        break;
+        case MX: run_dig(domain, "MX");
+        break;
+        case IP: run_dig(domain, "");
+        break;
+        case SSL_EXP: get_ssl_expiration(domain);
+        break;
+        case HTTP: get_http_status(domain);
+        break;
+        case TRACEROUTE: traceroute(domain);
+        break;
+        case WHOIS: whois(domain);
+        break;
+        case MY_IP: whats_my_ip();
+        break;
+        case DOMAIN_EXP: get_domain_expiration(domain);
+        break;
+    }
 }

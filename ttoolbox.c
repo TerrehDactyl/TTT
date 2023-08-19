@@ -24,7 +24,7 @@ void network_scanning();
 void website_scanning();
 void passwd_cracking();
 void raid_calculator();
-void pack_boxes(int i);
+void pack_boxes(int i); // i may want to restructure this input for better readability
 void run_raid();
 void run_dns();
 struct widgets
@@ -63,17 +63,17 @@ int main( int argc, char *argv[] )
     show_and_destroy(gwidget.window);
 }
 
-void network_scanning()
+void network_scanning() //i need to reorder this function, it's still a wreck
 {
     gchar *button_labels[] = {"Start Scan", "Cancel Scan"};
     void *button_callbacks[] = {start_scan, cancel_scan};
     gchar *entry_labels[] = {"Starting Port\n", "Ending Port\n", "Start IP\n", "End IP\n"};
-    pscan.label_len = arraysize(entry_labels);
-    pscan.btn_len = arraysize(button_labels);
-    pscan.entry_len = arraysize(pscan.entries);
+    pscan.label_len = arraysize(entry_labels);  //do these really need to be 
+    pscan.btn_len = arraysize(button_labels);   //part of the structure? 
+    pscan.entry_len = arraysize(pscan.entries); // or can i make them local and save memory
     gwidget.label_grid = create_labels(entry_labels, pscan.label_len);
+    gwidget.entry_grid = create_entries(pscan.entry_len,pscan.entries);
     gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, pscan.btn_len);
-    gwidget.entry_grid = create_entries(pscan.entry_len,pscan.entries); // seg fault is here 
     gwidget.nested_notebook = create_notebook(gwidget.notebook);
     gwidget.nested_frame = create_frame_with_pagehead(gwidget.nested_notebook, "Network Scanning");
     gwidget.child = gtk_notebook_get_nth_page (GTK_NOTEBOOK(gwidget.notebook), 0);
@@ -99,8 +99,8 @@ void website_scanning()
     void *button_callbacks [] = {run_dns}; 
     dns.scan_type_len = arraysize(combo_labels);
     dns.btn_len = arraysize(button_labels);
-    gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, dns.btn_len);
     dns.entry_len = arraysize(gwidget.dns_entries);
+    gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, dns.btn_len);
     gwidget.entry_grid = create_entries(dns.entry_len,gwidget.dns_entries);
     gwidget.nested_notebook = create_notebook(gwidget.notebook);
     gwidget.child = gtk_notebook_get_nth_page (GTK_NOTEBOOK(gwidget.notebook), 1);
@@ -126,11 +126,11 @@ void raid_calculator()
     gchar *combo_labels[] = {"0", "1", "5", "6", "10", "50", "60"};
     gchar *entry_labels[] = {"Type", "Disks", "Size", "Sets"};
     gchar *button_labels[] = {"Calculate"};
-    raid.entry_len = arraysize(entry_labels);
-    gwidget.label_grid = create_labels(entry_labels, raid.entry_len);
-    raid.btn_len = arraysize(button_labels); 
-    raid.combo_len = arraysize(combo_labels);
+    raid.entry_len = arraysize(entry_labels); //do these really need to be 
+    raid.btn_len = arraysize(button_labels);  //part of the structure? 
+    raid.combo_len = arraysize(combo_labels); // or can i make them local and save memory
     void *button_callbacks[] = {run_raid};
+    gwidget.label_grid = create_labels(entry_labels, raid.entry_len);
     gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, raid.btn_len);
     gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Raid Calculator");
     gwidget.combo_box = create_combobox(combo_labels,  raid.combo_len, raid_type_cbk);
@@ -144,9 +144,9 @@ void passwd_cracking()
 {
     gchar *combo_labels[] ={"Brute Force", "Dictionary", "Rainbow Tables"};
     gchar *button_labels[] = {"Crack", "Cancel"};
+    void *button_callbacks[] = {crack};
     pwcrack.combo_label_len = arraysize(combo_labels);
     pwcrack.btn_len = arraysize(button_labels);
-    void *button_callbacks[] = {crack};
     gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, pwcrack.btn_len);
     gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Password Cracking");
     gwidget.combo_box = create_combobox(combo_labels,  pwcrack.combo_label_len, pwcrack_combo_cbk);
@@ -197,21 +197,20 @@ void pack_boxes(int i)
     }
 }
 
-void run_raid()
+void run_raid() //this whole functions is a lot of wtf, i'm sure i can do this like, WAY better.
 {
     const gchar *ascii_entries[raid.entry_len];
-    int int_entries[raid.entry_len];
+    int int_entries[raid.entry_len]; //wtf
     get_entry_text(gwidget.raid_entries, ascii_entries, raid.entry_len);
 
     for(int i = 0; i < raid.entry_len-1; i++) // segfaults without this....wtf why?!?!
         int_entries[i] = atoi(ascii_entries[i]);
 
-    if(&raid.type == NULL)
+    if(&raid.type == NULL) //wtf this is dumb
         raid.type = 0;
     calculate_raid(raid.type, int_entries[0], int_entries[1], int_entries[2]);
     gtk_text_buffer_set_text ( gwidget.buffer, raid.buffer, -1); //displays input.num1 
 }
-
 
 void run_dns()
 {

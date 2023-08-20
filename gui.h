@@ -44,18 +44,18 @@ void pack_boxes(int i)
 void network_scanning() //i need to reorder this function, it's still a wreck
 {
     gchar *button_labels[] = {"Start Scan", "Cancel Scan"};
-    void *button_callbacks[] = {start_scan, cancel_scan};
     gchar *entry_labels[] = {"Starting Port\n", "Ending Port\n", "Start IP\n", "End IP\n"};
+    gwidget.page_label = gtk_label_new("Network Scanning");  
     pscan.label_len = arraysize(entry_labels);  //do these really need to be 
     pscan.btn_len = arraysize(button_labels);   //part of the structure? 
     pscan.entry_len = arraysize(pscan.entries); // or can i make them local and save memory
+    void *button_callbacks[] = {start_scan, cancel_scan};
     gwidget.label_grid = create_labels(entry_labels, pscan.label_len);
     gwidget.entry_grid = create_entries(pscan.entry_len,pscan.entries);
     gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, pscan.btn_len);
     gwidget.nested_notebook = create_notebook(gwidget.notebook);
     gwidget.nested_frame = create_frame_with_pagehead(gwidget.nested_notebook, "Network Scanning");
-    gwidget.child = gtk_notebook_get_nth_page (GTK_NOTEBOOK(gwidget.notebook), 0);
-    gwidget.page_label = gtk_label_new("Network Scanning");                         
+    gwidget.child = gtk_notebook_get_nth_page (GTK_NOTEBOOK(gwidget.notebook), 0);                       
     gtk_notebook_set_tab_label(GTK_NOTEBOOK(gwidget.notebook), gwidget.child, gwidget.page_label);
     GtkTextBuffer *buffer = gtk_text_buffer_new (NULL);
     gwidget.scrolled_window = gtk_scrolled_window_new(NULL, NULL);
@@ -74,6 +74,7 @@ void website_scanning()
 {
     gchar *combo_labels[] = {"Name Server", "AAAA", "TXT", "MX", "IP", "SSL Expiration", "HTTP","Trace Route","WHOIS", "What's My IP","Domain Expiration"};
     gchar *button_labels[] = {"Run"};
+    gwidget.page_label = gtk_label_new("Website Scanning");   
     void *button_callbacks [] = {run_dns}; 
     dns.scan_type_len = arraysize(combo_labels);
     dns.btn_len = arraysize(button_labels);
@@ -81,8 +82,7 @@ void website_scanning()
     gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, dns.btn_len);
     gwidget.entry_grid = create_entries(dns.entry_len,gwidget.dns_entries);
     gwidget.nested_notebook = create_notebook(gwidget.notebook);
-    gwidget.child = gtk_notebook_get_nth_page (GTK_NOTEBOOK(gwidget.notebook), 1);
-    gwidget.page_label = gtk_label_new("Website Scanning");                       
+    gwidget.child = gtk_notebook_get_nth_page (GTK_NOTEBOOK(gwidget.notebook), 1);                    
     gtk_notebook_set_tab_label(GTK_NOTEBOOK(gwidget.notebook), gwidget.child, gwidget.page_label);
     gwidget.nested_frame = create_frame_with_pagehead(gwidget.nested_notebook, "Website Scanning");
     gwidget.combo_box = create_combobox(combo_labels,  dns.scan_type_len, dns_combo_cbk);
@@ -104,13 +104,13 @@ void raid_calculator()
     gchar *combo_labels[] = {"0", "1", "5", "6", "10", "50", "60"};
     gchar *entry_labels[] = {"Type", "Disks", "Size", "Sets"};
     gchar *button_labels[] = {"Calculate"};
+    gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Raid Calculator");
     raid.entry_len = arraysize(entry_labels); //do these really need to be 
     raid.btn_len = arraysize(button_labels);  //part of the structure? 
     raid.combo_len = arraysize(combo_labels); // or can i make them local and save memory
     void *button_callbacks[] = {run_raid};
     gwidget.label_grid = create_labels(entry_labels, raid.entry_len);
     gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, raid.btn_len);
-    gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Raid Calculator");
     gwidget.combo_box = create_combobox(combo_labels, raid.combo_len, raid_type_cbk); // why no work? 
     gwidget.entry_grid = create_entries(raid.entry_len-1, gwidget.raid_entries);
     gwidget.display = create_text_display(TRUE, 50, 20);
@@ -122,11 +122,11 @@ void passwd_cracking()
 {
     gchar *combo_labels[] ={"Brute Force", "Dictionary", "Rainbow Tables"};
     gchar *button_labels[] = {"Crack", "Cancel"};
+    gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Password Cracking");
     void *button_callbacks[] = {crack};
     pwcrack.combo_label_len = arraysize(combo_labels);
     pwcrack.btn_len = arraysize(button_labels);
     gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, pwcrack.btn_len);
-    gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Password Cracking");
     gwidget.combo_box = create_combobox(combo_labels,  pwcrack.combo_label_len, pwcrack_combo_cbk);
     pack_boxes(3);
 }

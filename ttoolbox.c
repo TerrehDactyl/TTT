@@ -10,7 +10,7 @@ modules to write
 =================
 -Network Enumeration/fingerprinting - use nmap.
 -scraping/subdomains
--subnet calculatord
+-subnet calculator
 -binary hex dec converter
 -cable tester
 
@@ -33,5 +33,6 @@ int main( int argc, char *argv[])
     website_scanning();
     raid_calculator();
     passwd_cracking();
+    
     show_and_destroy(gwidget.window);
 }

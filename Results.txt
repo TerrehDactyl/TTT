@@ -1,2 +1,0 @@
-192.168.0.120 Port: 80 is open
-192.168.0.120 Port: 81 is closed

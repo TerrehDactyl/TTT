@@ -51,7 +51,10 @@ GtkWidget *create_text_display(gboolean i, int length, int width)
 	GtkWidget *display = gtk_text_view_new(); //sets the display widget as a text display 
 
 	if (i == TRUE)
+	{
 		gtk_text_view_set_editable (GTK_TEXT_VIEW(display),FALSE);
+	}
+
 	gtk_widget_set_size_request(display, length, width); //sets the size of the display 
 	return display;
 }
@@ -143,7 +146,9 @@ GtkComboBox *create_combobox(gchar *combo_labels[], size_t combo_size, void *cal
 	GtkComboBox *widget = GTK_COMBO_BOX(gtk_combo_box_text_new ());
 
 	for (int i = 0; i < combo_size; i++)
+	{
 		gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (widget), combo_labels[i]);
+	}
 	gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
 	g_signal_connect (widget,"changed",G_CALLBACK (callback),NULL);
 	return widget;

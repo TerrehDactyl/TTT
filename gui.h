@@ -26,11 +26,11 @@ void pack_boxes(int i)
         case 2://raid calculator
         gtk_container_add(GTK_CONTAINER(gwidget.frame), vbox); 
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(hbox), gwidget.label_grid, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(hbox), gwidget.entry_grid, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(hbox), gwidget.label_grid, FALSE, FALSE, 0);
         gtk_box_pack_start(GTK_BOX(hbox), GTK_WIDGET(gwidget.combo_box), FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(gwidget.button_box), FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(gwidget.display), FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(hbox), gwidget.entry_grid, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(vbox), gwidget.button_box, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(vbox), gwidget.display, FALSE, FALSE, 0); 
         break;
 
         case 3://password cracking
@@ -112,7 +112,7 @@ void raid_calculator()
     gwidget.label_grid = create_labels(entry_labels, raid.entry_len);
     gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, raid.btn_len);
     gwidget.combo_box = create_combobox(combo_labels, raid.combo_len, raid_type_cbk); // why no work? 
-    gwidget.entry_grid = create_entries(raid.entry_len-1, gwidget.raid_entries);
+    gwidget.entry_grid = create_entries(raid.entry_len, gwidget.raid_entries);
     gwidget.display = create_text_display(TRUE, 50, 20);
     gwidget.buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW ( gwidget.display));
     pack_boxes(2);
@@ -120,13 +120,13 @@ void raid_calculator()
 
 void passwd_cracking()
 {
-    gchar *combo_labels[] ={"Brute Force", "Dictionary", "Rainbow Tables"};
+    gchar *combo_labels[] = {"Brute Force", "Dictionary", "Rainbow Tables"};
     gchar *button_labels[] = {"Crack", "Cancel"};
     gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Password Cracking");
     void *button_callbacks[] = {crack};
     pwcrack.combo_label_len = arraysize(combo_labels);
     pwcrack.btn_len = arraysize(button_labels);
-    gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, pwcrack.btn_len);
+    gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL, 1, pwcrack.btn_len);
     gwidget.combo_box = create_combobox(combo_labels,  pwcrack.combo_label_len, pwcrack_combo_cbk);
     pack_boxes(3);
 }

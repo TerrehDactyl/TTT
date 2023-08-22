@@ -1,4 +1,3 @@
-
 struct raid_vars
 {
 	size_t combo_len;
@@ -69,8 +68,7 @@ char calculate_raid(int type, int disks, int size, int sets)
 
 void raid_type_cbk(GtkComboBox *combo_box, gpointer user_data)
 {
-	gchar *selection = gtk_combo_box_text_get_active_text (GTK_COMBO_BOX_TEXT(combo_box));
-	raid.type = atoi(selection);
+	raid.type = atoi(gtk_combo_box_text_get_active_text (GTK_COMBO_BOX_TEXT(combo_box)));
 }
 
 void run_raid() //this whole functions is a lot of wtf, i'm sure i can do this like, WAY better.

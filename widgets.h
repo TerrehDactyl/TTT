@@ -10,7 +10,7 @@ struct widgets
     GtkWidget *nested_frame;
     GtkWidget *page_label;
     GtkWidget *child;
-    GtkWidget *raid_entries[2];
+    GtkWidget *raid_entries[4];
     GtkComboBox *combo_box;
     GtkWidget *display;
     GtkTextBuffer *buffer;

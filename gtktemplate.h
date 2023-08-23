@@ -154,6 +154,24 @@ GtkComboBox *create_combobox(gchar *combo_labels[], size_t combo_size, void *cal
 	return widget;
 }
 
+// GtkComboBox *create_combobox(gchar *combo_labels[], size_t combo_sizes, void *callback) 
+// {
+// 	GtkComboBox *widget = GTK_COMBO_BOX(gtk_combo_box_text_new ());
+// 	size_t combo_size = 0;
+// 	while(*combo_labels[combo_size++])
+// 	{
+// 		g_print("%d\n", combo_size);
+// 	}
+// 	for (int i = 0; i < combo_size; i++)
+// 	{
+// 		gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (widget), combo_labels[i]);
+// 	}
+// 	gtk_combo_box_set_active (GTK_COMBO_BOX (widget), 0);
+// 	g_signal_connect (widget,"changed",G_CALLBACK (callback),NULL);
+// 	return widget;
+// }
+
+
 GtkWidget *create_labels(gchar *label_text[], size_t array_len) 
 {
 	GtkWidget *grid = gtk_grid_new();

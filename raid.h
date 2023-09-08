@@ -74,7 +74,7 @@ char calculate_raid(int type, int disks, float size, int sets)
 						return 0;
 					}
 				read_gain = disks - (sets*2);
-				final_size = (disks*size)-((size*sets)*2);
+				final_size = (disks*size) - ((size*sets)*2);
 				fail_over = sets*2;
 				break;
 	}
@@ -87,14 +87,13 @@ void raid_type_cbk(GtkComboBox *combo_box, gpointer user_data)
 	raid.type = atoi(gtk_combo_box_text_get_active_text (GTK_COMBO_BOX_TEXT(combo_box)));
 }
 
-void run_raid() //this whole functions is a lot of wtf, i'm sure i can do this like, WAY better.
+void run_raid()
 {
 	gtk_text_buffer_set_text(gwidget.buffer, "", -1);
     const gchar *ascii_entries[raid.entry_len];
-    int int_entries[raid.entry_len]; //wtf
     get_entry_text(gwidget.raid_entries, ascii_entries, raid.entry_len);
 
-    if(&raid.type == NULL) //wtf this is dumb
+    if(&raid.type == NULL)
         raid.type = 0;
     calculate_raid(raid.type, atoi(ascii_entries[0]), atoi(ascii_entries[1]), atoi(ascii_entries[2]));
     gtk_text_buffer_set_text ( gwidget.buffer, raid.buffer, -1); //displays input.num1 

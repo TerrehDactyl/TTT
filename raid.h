@@ -89,12 +89,12 @@ void raid_type_cbk(GtkComboBox *combo_box, gpointer user_data)
 
 void run_raid()
 {
-	gtk_text_buffer_set_text(gwidget.buffer, "", -1);
+	gtk_text_buffer_set_text(gwidget.raid_buffer, "", -1);
     const gchar *ascii_entries[raid.entry_len];
     get_entry_text(gwidget.raid_entries, ascii_entries, raid.entry_len);
 
     if(&raid.type == NULL)
         raid.type = 0;
     calculate_raid(raid.type, atoi(ascii_entries[0]), atoi(ascii_entries[1]), atoi(ascii_entries[2]));
-    gtk_text_buffer_set_text ( gwidget.buffer, raid.buffer, -1); //displays input.num1 
+    gtk_text_buffer_set_text ( gwidget.raid_buffer, raid.buffer, -1); //displays input.num1 
 }

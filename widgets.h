@@ -13,6 +13,10 @@ struct widgets
     GtkWidget *raid_entries[4];
     GtkComboBox *combo_box;
     GtkWidget *display;
+    GtkWidget *raid_display;
+    GtkWidget *dns_display;
+    GtkTextBuffer *raid_buffer;
+    GtkTextBuffer *dns_buffer;
     GtkTextBuffer *buffer;
     GtkWidget *pscan_output;
     GtkWidget *scrolled_window;

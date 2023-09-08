@@ -20,7 +20,7 @@ void pack_boxes(int i)
         gtk_box_pack_start(GTK_BOX(vbox), gwidget.entry_grid, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(vbox), gwidget.button_box, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(hbox), GTK_WIDGET(gwidget.combo_box), FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(vbox), gwidget.display, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(vbox), gwidget.dns_display, FALSE, FALSE, 0); 
         break;
 
         case 2://raid calculator
@@ -32,7 +32,7 @@ void pack_boxes(int i)
         gtk_box_pack_start(GTK_BOX(right_vbox), GTK_WIDGET(gwidget.combo_box), FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(right_vbox), gwidget.entry_grid, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(vbox), gwidget.button_box, FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(vbox), gwidget.display, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(vbox), gwidget.raid_display, FALSE, FALSE, 0); 
         break;
 
         case 3://password cracking
@@ -85,8 +85,8 @@ void website_scanning()
     gwidget.entry_grid = create_entries(dns.entry_len,gwidget.dns_entries);
     gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Website Scanning");
     gwidget.combo_box = create_combobox(combo_labels,  dns.scan_type_len, dns_combo_cbk);
-    gwidget.display = create_text_display(TRUE, 50, 20);
-    gwidget.buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW ( gwidget.display));
+    gwidget.dns_display = create_text_display(TRUE, 50, 20);
+    gwidget.dns_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (gwidget.dns_display));
     pack_boxes(1);
 }
 
@@ -104,8 +104,8 @@ void raid_calculator()
     gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, raid.btn_len);
     gwidget.combo_box = create_combobox(combo_labels, raid.combo_len, raid_type_cbk); // why no work? 
     gwidget.entry_grid = create_entries(raid.entry_len, gwidget.raid_entries);
-    gwidget.display = create_text_display(TRUE, 50, 20);
-    gwidget.buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (gwidget.display));
+    gwidget.raid_display = create_text_display(TRUE, 50, 20);
+    gwidget.buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (gwidget.raid_display));
     pack_boxes(2);
 }
 

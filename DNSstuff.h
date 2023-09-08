@@ -34,6 +34,7 @@ dns.selection = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo_box)
 
 void run_dns()
 {
+	gtk_text_buffer_set_text(gwidget.dns_buffer, "", -1);
     const gchar *dns_entries[dns.entry_len];
     get_entry_text(gwidget.dns_entries, dns_entries, dns.entry_len);
     const gchar *domain = dns_entries[0];
@@ -76,6 +77,6 @@ void run_dns()
     }
 
     while (fgets(buffer, sizeof(buffer), fp) != NULL) 
-        gtk_text_buffer_insert_at_cursor(gwidget.buffer, buffer, -1);
+   		gtk_text_buffer_insert_at_cursor(gwidget.dns_buffer, buffer, -1);
     pclose(fp);
 }

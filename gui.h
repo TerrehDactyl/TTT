@@ -1,7 +1,7 @@
 void pack_boxes(int i)
 {
     GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1); //creates a vbox without autosizing 
-    GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 1); //creates a vbox without autosizing 
+    GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 1); //creates a hbox without autosizing 
 
     switch(i)
     {
@@ -24,7 +24,7 @@ void pack_boxes(int i)
         break;
 
         case 2://raid calculator
-        GtkWidget *right_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1); //creates a vbox without autosizing 
+        GtkWidget *right_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1); //boxes inside of boxes
         gtk_container_add(GTK_CONTAINER(gwidget.frame), vbox); 
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(hbox), gwidget.label_grid, FALSE, FALSE, 0);

@@ -24,7 +24,6 @@ struct dns_vars
 void run_dig(const char *domain, char *param)
 {
 sprintf(dns.command, "dig %s %s +short", param, domain);
-// system(dns.command);
 }
 
 void dns_combo_cbk(GtkComboBox *combo_box, gpointer user_data)
@@ -38,7 +37,6 @@ void run_dns()
     const gchar *dns_entries[dns.entry_len];
     get_entry_text(gwidget.dns_entries, dns_entries, dns.entry_len);
     const gchar *domain = dns_entries[0];
-    FILE *fp;
 
     if(dns.selection == NULL)
         dns.selection = "Name Server";
@@ -68,15 +66,17 @@ void run_dns()
         case DOMAIN_EXP: sprintf(dns.command, "whois %s | egrep -i 'Expiration Date:'", domain);
         break;
     }
-	char buffer[1024];
+    
+    FILE *fp;
     fp = popen(dns.command, "r");
+
     if(fp == NULL)
     {
     	perror("popen");
     	exit(EXIT_FAILURE);
     }
 
-    while (fgets(buffer, sizeof(buffer), fp) != NULL) 
-   		gtk_text_buffer_insert_at_cursor(gwidget.dns_buffer, buffer, -1);
+    while (fgets(dns.buffer, sizeof(dns.buffer), fp) != NULL) 
+   		gtk_text_buffer_insert_at_cursor(gwidget.dns_buffer, dns.buffer, -1);
     pclose(fp);
 }

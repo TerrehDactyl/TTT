@@ -24,11 +24,13 @@ void pack_boxes(int i)
         break;
 
         case 2://raid calculator
+        GtkWidget *right_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1); //creates a vbox without autosizing 
         gtk_container_add(GTK_CONTAINER(gwidget.frame), vbox); 
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(hbox), gwidget.label_grid, FALSE, FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(hbox), GTK_WIDGET(gwidget.combo_box), FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(hbox), gwidget.entry_grid, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(hbox), right_vbox, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(right_vbox), GTK_WIDGET(gwidget.combo_box), FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(right_vbox), gwidget.entry_grid, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(vbox), gwidget.button_box, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(vbox), gwidget.display, FALSE, FALSE, 0); 
         break;
@@ -102,10 +104,10 @@ void website_scanning()
 void raid_calculator()
 {
     gchar *combo_labels[] = {"0", "1", "5", "6", "10", "50", "60"};
-    gchar *entry_labels[] = {"Type", "Disks", "Size", "Sets"};
+    gchar *entry_labels[] = {"Type\n", "Disks\n", "Size (TB)\n", "Sets\n"};
     gchar *button_labels[] = {"Calculate"};
     gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Raid Calculator");
-    raid.entry_len = arraysize(entry_labels); //do these really need to be 
+    raid.entry_len = arraysize(entry_labels)-1; //do these really need to be 
     raid.btn_len = arraysize(button_labels);  //part of the structure? 
     raid.combo_len = arraysize(combo_labels); // or can i make them local and save memory
     void *button_callbacks[] = {run_raid};

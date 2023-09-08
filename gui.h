@@ -15,12 +15,11 @@ void pack_boxes(int i)
         break;
 
         case 1://website scanning
-        gtk_container_add(GTK_CONTAINER(gwidget.nested_frame), vbox); 
+        gtk_container_add(GTK_CONTAINER(gwidget.frame), vbox); 
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox), gwidget.entry_grid, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(vbox), gwidget.button_box, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(hbox), GTK_WIDGET(gwidget.combo_box), FALSE, FALSE, 0); 
-        gtk_box_pack_start(GTK_BOX(hbox), gwidget.scrolled_window, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(vbox), gwidget.display, FALSE, FALSE, 0); 
         break;
 
@@ -84,23 +83,10 @@ void website_scanning()
     dns.entry_len = arraysize(gwidget.dns_entries);
     gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, dns.btn_len);
     gwidget.entry_grid = create_entries(dns.entry_len,gwidget.dns_entries);
-    gwidget.nested_notebook = create_notebook(gwidget.notebook);
-    gwidget.child = gtk_notebook_get_nth_page (GTK_NOTEBOOK(gwidget.notebook), 1);                    
-    gtk_notebook_set_tab_label(GTK_NOTEBOOK(gwidget.notebook), gwidget.child, gwidget.page_label);
-    gwidget.nested_frame = create_frame_with_pagehead(gwidget.nested_notebook, "Website Scanning");
+    gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Website Scanning");
     gwidget.combo_box = create_combobox(combo_labels,  dns.scan_type_len, dns_combo_cbk);
-    GtkTextBuffer *buffer = gtk_text_buffer_new (NULL);//start of scrolled window function
-    gwidget.scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-    const gchar *text = {"Prefilter multiple pictures Preprocess\n"};
-    gtk_text_buffer_set_text (buffer, text, -1);
     gwidget.display = create_text_display(TRUE, 50, 20);
     gwidget.buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW ( gwidget.display));
-    gwidget.dns_output = gtk_text_view_new_with_buffer (buffer);
-    gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (gwidget.dns_output), GTK_WRAP_WORD); 
-    gtk_text_view_set_editable(GTK_TEXT_VIEW(gwidget.dns_output), FALSE);
-    //gtk_widget_set_sensitive(GTK_WIDGET(gwidget.pscan_output),FALSE);
-    gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (gwidget.scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC); 
-    gtk_container_add (GTK_CONTAINER (gwidget.scrolled_window), gwidget.dns_output); // end of scrolled window function
     pack_boxes(1);
 }
 
@@ -119,7 +105,7 @@ void raid_calculator()
     gwidget.combo_box = create_combobox(combo_labels, raid.combo_len, raid_type_cbk); // why no work? 
     gwidget.entry_grid = create_entries(raid.entry_len, gwidget.raid_entries);
     gwidget.display = create_text_display(TRUE, 50, 20);
-    gwidget.buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW ( gwidget.display));
+    gwidget.buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (gwidget.display));
     pack_boxes(2);
 }
 

@@ -27,42 +27,6 @@ sprintf(dns.command, "dig %s %s +short", param, domain);
 // system(dns.command);
 }
 
-void traceroute(const char *domain)
-{
-sprintf(dns.command, "traceroute %s", domain);
-// system(dns.command);
-}
-
-void whois(const char *domain)
-{
-sprintf(dns.command, "whois %s", domain);
-// system(dns.command);
-}
-
-void get_ssl_expiration(const char *domain)
-{
-sprintf(dns.command, "echo | openssl s_client -servername %s -connect %s:443 | openssl x509 -noout -dates", domain, domain);
-// system(dns.command);
-}
-
-void get_http_status(const char *website)
-{
-sprintf(dns.command, "curl -I %s 2>/dev/null | head -n 1", website);
-// system(dns.command);
-}
-
-void get_domain_expiration(const char *domain)
-{
-sprintf(dns.command, "whois %s | egrep -i 'Expiration Date:'", domain);
-// system(dns.command);
-}
-
-void whats_my_ip()
-{
-sprintf(dns.command, "dig +short myip.opendns.com @resolver1.opendns.com");
-// system("dig +short myip.opendns.com @resolver1.opendns.com");
-}
-
 void dns_combo_cbk(GtkComboBox *combo_box, gpointer user_data)
 {
 dns.selection = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo_box));
@@ -90,19 +54,20 @@ void run_dns()
         break;
         case IP: run_dig(domain, "");
         break;
-        case SSL_EXP: get_ssl_expiration(domain);
+        case SSL_EXP: sprintf(dns.command, "echo | openssl s_client -servername %s -connect %s:443 | openssl x509 -noout -dates", domain, domain);
         break;
-        case HTTP: get_http_status(domain);
+        case HTTP: sprintf(dns.command, "curl -I %s 2>/dev/null | head -n 1", domain);
         break;
-        case TRACEROUTE: traceroute(domain);
+        case TRACEROUTE: sprintf(dns.command, "traceroute %s", domain);
         break;
-        case WHOIS: whois(domain);
+        case WHOIS: sprintf(dns.command, "whois %s", domain);
         break;
-        case MY_IP: whats_my_ip();
+        case MY_IP: sprintf(dns.command, "dig +short myip.opendns.com @resolver1.opendns.com");
         break;
-        case DOMAIN_EXP: get_domain_expiration(domain);
+        case DOMAIN_EXP: sprintf(dns.command, "whois %s | egrep -i 'Expiration Date:'", domain);
         break;
     }
+	char buffer[1024];
     fp = popen(dns.command, "r");
     if(fp == NULL)
     {
@@ -110,8 +75,7 @@ void run_dns()
     	exit(EXIT_FAILURE);
     }
 
-    while (fgets(dns.buffer, sizeof(dns.buffer), fp) != NULL) 
-    {
-        gtk_text_buffer_set_text (gwidget.buffer, dns.buffer, -1);
-    }
+    while (fgets(buffer, sizeof(buffer), fp) != NULL) 
+        gtk_text_buffer_insert_at_cursor(gwidget.buffer, buffer, -1);
+    pclose(fp);
 }

@@ -21,6 +21,7 @@ void pack_boxes(int i)
         gtk_box_pack_start(GTK_BOX(vbox), gwidget.button_box, FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(hbox), GTK_WIDGET(gwidget.combo_box), FALSE, FALSE, 0); 
         gtk_box_pack_start(GTK_BOX(hbox), gwidget.scrolled_window, FALSE, FALSE, 0); 
+        gtk_box_pack_start(GTK_BOX(vbox), gwidget.display, FALSE, FALSE, 0); 
         break;
 
         case 2://raid calculator
@@ -92,6 +93,8 @@ void website_scanning()
     gwidget.scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     const gchar *text = {"Prefilter multiple pictures Preprocess\n"};
     gtk_text_buffer_set_text (buffer, text, -1);
+    gwidget.display = create_text_display(TRUE, 50, 20);
+    gwidget.buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW ( gwidget.display));
     gwidget.dns_output = gtk_text_view_new_with_buffer (buffer);
     gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (gwidget.dns_output), GTK_WRAP_WORD); 
     gtk_text_view_set_editable(GTK_TEXT_VIEW(gwidget.dns_output), FALSE);
@@ -107,9 +110,9 @@ void raid_calculator()
     gchar *entry_labels[] = {"Type\n", "Disks\n", "Size (TB)\n", "Sets\n"};
     gchar *button_labels[] = {"Calculate"};
     gwidget.frame = create_frame_with_pagehead(gwidget.notebook, "Raid Calculator");
-    raid.entry_len = arraysize(entry_labels)-1; //do these really need to be 
-    raid.btn_len = arraysize(button_labels);  //part of the structure? 
-    raid.combo_len = arraysize(combo_labels); // or can i make them local and save memory
+    raid.entry_len = arraysize(entry_labels)-1; //this is -1 because type is technically a combobox label
+    raid.btn_len = arraysize(button_labels);
+    raid.combo_len = arraysize(combo_labels);
     void *button_callbacks[] = {run_raid};
     gwidget.label_grid = create_labels(entry_labels, raid.entry_len);
     gwidget.button_box = create_single_size_grid(button_labels, button_callbacks, NULL,1, raid.btn_len);

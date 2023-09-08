@@ -18,47 +18,49 @@ struct dns_vars
 	size_t entry_len;
 	gchar command[256];
 	gchar *selection;
+	char buffer[256];
 }dns;
 
 void run_dig(const char *domain, char *param)
 {
 sprintf(dns.command, "dig %s %s +short", param, domain);
-system(dns.command);
+// system(dns.command);
 }
 
 void traceroute(const char *domain)
 {
 sprintf(dns.command, "traceroute %s", domain);
-system(dns.command);
+// system(dns.command);
 }
 
 void whois(const char *domain)
 {
 sprintf(dns.command, "whois %s", domain);
-system(dns.command);
+// system(dns.command);
 }
 
 void get_ssl_expiration(const char *domain)
 {
 sprintf(dns.command, "echo | openssl s_client -servername %s -connect %s:443 | openssl x509 -noout -dates", domain, domain);
-system(dns.command);
+// system(dns.command);
 }
 
 void get_http_status(const char *website)
 {
 sprintf(dns.command, "curl -I %s 2>/dev/null | head -n 1", website);
-system(dns.command);
+// system(dns.command);
 }
 
 void get_domain_expiration(const char *domain)
 {
 sprintf(dns.command, "whois %s | egrep -i 'Expiration Date:'", domain);
-system(dns.command);
+// system(dns.command);
 }
 
 void whats_my_ip()
 {
-system("dig +short myip.opendns.com @resolver1.opendns.com");
+sprintf(dns.command, "dig +short myip.opendns.com @resolver1.opendns.com");
+// system("dig +short myip.opendns.com @resolver1.opendns.com");
 }
 
 void dns_combo_cbk(GtkComboBox *combo_box, gpointer user_data)
@@ -71,6 +73,8 @@ void run_dns()
     const gchar *dns_entries[dns.entry_len];
     get_entry_text(gwidget.dns_entries, dns_entries, dns.entry_len);
     const gchar *domain = dns_entries[0];
+    FILE *fp;
+
     if(dns.selection == NULL)
         dns.selection = "Name Server";
     
@@ -98,5 +102,16 @@ void run_dns()
         break;
         case DOMAIN_EXP: get_domain_expiration(domain);
         break;
+    }
+    fp = popen(dns.command, "r");
+    if(fp == NULL)
+    {
+    	perror("popen");
+    	exit(EXIT_FAILURE);
+    }
+
+    while (fgets(dns.buffer, sizeof(dns.buffer), fp) != NULL) 
+    {
+        gtk_text_buffer_set_text (gwidget.buffer, dns.buffer, -1);
     }
 }

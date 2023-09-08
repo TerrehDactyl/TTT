@@ -17,7 +17,8 @@ struct widgets
     GtkWidget *dns_display;
     GtkTextBuffer *raid_buffer;
     GtkTextBuffer *dns_buffer;
-    GtkTextBuffer *buffer;
+    GtkTextBuffer *pwcrack_buffer;
+    GtkWidget *pwcrack_display;
     GtkWidget *pscan_output;
     GtkWidget *scrolled_window;
     GtkWidget *dns_output;

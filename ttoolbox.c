@@ -16,10 +16,7 @@ modules to write
 
 modules to integrate
 =====================
--raid calculator
--dns scanning
 -pwcracking 
--traceroute
 */
 
 int main( int argc, char *argv[])

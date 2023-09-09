@@ -1,4 +1,6 @@
 #include <openssl/sha.h>
+// these values come from the hash function, they're used for the switch
+// so we don't have to strcmp over and over again
 #define AAAA 25765
 #define NAMESERVER 2223184069
 #define TXT 5749
@@ -40,7 +42,7 @@ void run_dns()
 
     if(dns.selection == NULL)
         dns.selection = "Name Server";
-    
+
     switch(hash(dns.selection))
     {
         case AAAA: run_dig(domain, "aaaa");
@@ -66,7 +68,7 @@ void run_dns()
         case DOMAIN_EXP: sprintf(dns.command, "whois %s | egrep -i 'Expiration Date:'", domain);
         break;
     }
-    
+
     FILE *fp;
     fp = popen(dns.command, "r");
 
